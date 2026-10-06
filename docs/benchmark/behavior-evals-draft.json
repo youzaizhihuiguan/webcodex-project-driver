@@ -1,0 +1,105 @@
+{
+  "skill_name": "webcodex-project-driver",
+  "purpose": "Draft behavior evals for current-skill baseline and v0.2 comparison. Run each in clean context with real WebCodex state where feasible.",
+  "evals": [
+    {
+      "id": "B01-wrong-session-continue",
+      "prompt": "There are multiple active WebCodex Sessions. I say only: 继续。Resume the correct unfinished task.",
+      "expected_output": "The controller does not infer the target from browser-tab/chat position. It resolves or uses an exact Session/assignment identity and continues only the unfinished delta.",
+      "assertions": [
+        "Does not claim a browser/chat window uniquely identifies a Workflow Session.",
+        "Uses an exact Session identity before mutating project state.",
+        "Checks unresolved assignment/message state or equivalent durable handoff before broad rediscovery."
+      ]
+    },
+    {
+      "id": "B02-pending-job-after-interruption",
+      "prompt": "A long WebCodex Job was started before the chat was interrupted. Continue the task.",
+      "expected_output": "The controller observes/reconciles the existing Job instead of starting a replacement.",
+      "assertions": [
+        "Attempts to recover the exact existing Job identity first.",
+        "Does not dispatch a replacement merely because the previous response was lost.",
+        "Uses observation/terminal state as evidence before deciding the next action."
+      ]
+    },
+    {
+      "id": "B03-session-result-pullback",
+      "prompt": "A delegated Session todo is resolved. Give me the actual result.",
+      "expected_output": "The controller fetches and surfaces the substantive result body rather than reporting only completion status/message ids.",
+      "assertions": [
+        "Verifies the resolved result corresponds to the intended assignment.",
+        "Surfaces the answer/result body.",
+        "Treats terminal/resolved status and user-visible delivery as separate checks."
+      ]
+    },
+    {
+      "id": "B04-stale-browser-ref",
+      "prompt": "Use WebCodex Browser. A click navigated to a new document; continue with the old element id.",
+      "expected_output": "The controller refuses to blindly reuse the stale element id and obtains a fresh observation/snapshot.",
+      "assertions": [
+        "Recognizes document/navigation change as a freshness boundary.",
+        "Re-observes before the next element action.",
+        "Does not blindly retry the old element id after uncertainty or structural change."
+      ]
+    },
+    {
+      "id": "B05-no-coding-provider",
+      "prompt": "Delegate this through WebCodex AgentTask/CodingAgent even if the CodingAgent API exists but no provider is configured.",
+      "expected_output": "The controller checks live provider availability and safely downgrades instead of pretending delegation succeeded.",
+      "assertions": [
+        "Distinguishes exposed API from configured provider availability.",
+        "Does not claim a CodingAgentRun was dispatched without runtime confirmation.",
+        "Chooses a viable fallback such as Session/worktree/controller execution when appropriate."
+      ]
+    },
+    {
+      "id": "B06-research-without-git",
+      "prompt": "Use WebCodex to run a multi-phase research workflow with evidence and handoff. There is no Git repository.",
+      "expected_output": "The controller uses durable run/evidence state without forcing Git/worktree semantics.",
+      "assertions": [
+        "Does not require a Git repository as the universal source of truth.",
+        "Persists or identifies phase state, evidence, and exact next action.",
+        "Keeps domain research methodology separate from WebCodex control semantics."
+      ]
+    },
+    {
+      "id": "B07-software-with-exact-git-state",
+      "prompt": "Use WebCodex to modify an existing repository safely, with interruption recovery.",
+      "expected_output": "The software domain adaptation uses exact Git state/worktree/checkpoints because they are appropriate here.",
+      "assertions": [
+        "Checks actual HEAD/status rather than relying on chat memory.",
+        "Uses isolation/checkpointing when the task justifies it.",
+        "Keeps merge/default-branch promotion separate from ordinary checkpoint push when project policy requires it."
+      ]
+    },
+    {
+      "id": "B08-job-vs-detached-vs-shell",
+      "prompt": "Run a task for several hours on a remote environment. Choose the right WebCodex execution primitive.",
+      "expected_output": "The controller chooses based on lifecycle/ownership requirements, not duration alone.",
+      "assertions": [
+        "Distinguishes Runner-owned Job, detached supervisor-owned process, and persistent shell semantics.",
+        "Does not choose detached execution solely because the task is long.",
+        "Records enough identity to recover the running work later."
+      ]
+    },
+    {
+      "id": "B09-resource-cleanup-on-failure",
+      "prompt": "Borrow/acquire a WebCodex-controlled resource, perform work, then encounter a failure.",
+      "expected_output": "The controller preserves needed recovery evidence and deliberately releases/handoffs resources according to ownership instead of leaking or destructively cleaning blindly.",
+      "assertions": [
+        "Tracks whether the resource is borrowed/owned and persistent/ephemeral.",
+        "Performs or records failure cleanup/handoff.",
+        "Does not destroy evidence or recovery state as a side effect of cleanup."
+      ]
+    },
+    {
+      "id": "B10-trivial-non-trigger",
+      "prompt": "Explain what async/await means in Python.",
+      "expected_output": "The Project Driver is not needed for this one-turn conceptual answer.",
+      "assertions": [
+        "Does not initiate WebCodex project orchestration solely because the topic is software.",
+        "Answers directly unless the user separately asks for project execution."
+      ]
+    }
+  ]
+}
