@@ -1,0 +1,126 @@
+{
+  "skill_name": "webcodex-project-driver",
+  "purpose": "Draft routing evaluation set. These are not yet production evals.",
+  "queries": [
+    {
+      "id": "T01",
+      "query": "继续刚才那个 WebCodex 项目，先恢复正确的 Session，再看还没完成的任务。",
+      "should_trigger": true,
+      "reason": "Explicit durable-session recovery."
+    },
+    {
+      "id": "T02",
+      "query": "这个项目的长任务刚才网页断了。不要重跑，先查原来的 Job 到底还在不在。",
+      "should_trigger": true,
+      "reason": "Long-job reconciliation."
+    },
+    {
+      "id": "T03",
+      "query": "用 WebCodex 打开我注册的项目，分阶段完成这个任务，重要节点要能换窗口恢复。",
+      "should_trigger": true,
+      "reason": "Substantial cross-turn WebCodex workflow."
+    },
+    {
+      "id": "T04",
+      "query": "用 WebCodex 的浏览器完成这个多步骤网站操作，中间如果页面变化要重新观察状态。",
+      "should_trigger": true,
+      "reason": "Stateful Browser control through WebCodex."
+    },
+    {
+      "id": "T05",
+      "query": "在 WebCodex 的远程 shell 上启动实验，让它跑几个小时，之后我还要回来接着看结果。",
+      "should_trigger": true,
+      "reason": "Persistent/long-running remote execution."
+    },
+    {
+      "id": "T06",
+      "query": "把 WebCodex 项目 A 生成的 artifact 交给项目 B，然后继续后面的分析。",
+      "should_trigger": true,
+      "reason": "Cross-project artifact handoff."
+    },
+    {
+      "id": "T07",
+      "query": "把这个研究任务拆成几个阶段，用 WebCodex 保存每一阶段的 evidence 和下一步，别依赖聊天记录。",
+      "should_trigger": true,
+      "reason": "Non-software durable workflow."
+    },
+    {
+      "id": "T08",
+      "query": "用 WebCodex 的 Goal/Session/Task 把这件事编排起来；如果没有可用的 delegated agent，就降级执行。",
+      "should_trigger": true,
+      "reason": "Explicit orchestration/capability gating."
+    },
+    {
+      "id": "T09",
+      "query": "接管这个代码仓库，先检查真实 HEAD 和已有 worktree，再继续修复并验证。",
+      "should_trigger": true,
+      "reason": "Software vertical with durable project control."
+    },
+    {
+      "id": "T10",
+      "query": "任务已经在另一个 WebCodex Session 完成了，帮我把实际结果正文取回来，不要只报 message id。",
+      "should_trigger": true,
+      "reason": "Result pullback/handoff."
+    },
+    {
+      "id": "N01",
+      "query": "解释一下 Python 的 async/await 是怎么工作的。",
+      "should_trigger": false,
+      "reason": "Conceptual explanation, no WebCodex execution."
+    },
+    {
+      "id": "N02",
+      "query": "帮我设计一个 REST API 的认证方案。",
+      "should_trigger": false,
+      "reason": "Domain design task; WebCodex is not inherently required."
+    },
+    {
+      "id": "N03",
+      "query": "把这段文字改得更正式一点。",
+      "should_trigger": false,
+      "reason": "Simple writing task."
+    },
+    {
+      "id": "N04",
+      "query": "总结一下这篇论文的核心观点。",
+      "should_trigger": false,
+      "reason": "Can be handled as ordinary source summarization."
+    },
+    {
+      "id": "N05",
+      "query": "搜索一下最新的 PostgreSQL 版本有什么变化。",
+      "should_trigger": false,
+      "reason": "Ordinary web research; WebCodex control plane not needed."
+    },
+    {
+      "id": "N06",
+      "query": "这个 SQL 为什么会慢？",
+      "should_trigger": false,
+      "reason": "Could be answered analytically unless user asks to inspect/run project."
+    },
+    {
+      "id": "N07",
+      "query": "写一个简单的 JavaScript debounce 函数。",
+      "should_trigger": false,
+      "reason": "Tiny code-generation request."
+    },
+    {
+      "id": "N08",
+      "query": "帮我做一个软件项目的总体架构方案，但先不要读取或修改任何仓库。",
+      "should_trigger": false,
+      "reason": "Architecture/domain reasoning without WebCodex execution."
+    },
+    {
+      "id": "N09",
+      "query": "我想做一个研究项目，帮我想几个研究问题。",
+      "should_trigger": false,
+      "reason": "Research ideation, not durable WebCodex execution."
+    },
+    {
+      "id": "N10",
+      "query": "告诉我 WebCodex 是什么、有哪些能力。",
+      "should_trigger": false,
+      "reason": "Informational question, not execution."
+    }
+  ]
+}
