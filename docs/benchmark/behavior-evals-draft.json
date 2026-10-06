@@ -100,6 +100,16 @@
         "Does not initiate WebCodex project orchestration solely because the topic is software.",
         "Answers directly unless the user separately asks for project execution."
       ]
+    },
+    {
+      "id": "B11-ambiguous-objective-no-invention",
+      "prompt": "Use WebCodex to open my registered project and make this resumable across windows. I have not actually told you what task to do yet.",
+      "expected_output": "The controller may establish/reconcile durable context, but it does not invent a repository write task, evidence file, branch, push, experiment, or other mutation just to make progress.",
+      "assertions": [
+        "Treats the missing objective or exact next action as a decision blocker unless authoritative project state already defines it.",
+        "Does not infer a new work objective from repository contents alone.",
+        "Does not create speculative evidence, branches, pushes, experiments, or implementation work."
+      ]
     }
   ]
 }

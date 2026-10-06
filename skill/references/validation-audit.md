@@ -1,63 +1,82 @@
-# Validation and Audit
+# Validation, Evidence, and Audit
 
-## Layer validation
+## Ownership boundary
 
-Use the cheapest evidence that can falsify the current change first.
+The Project Driver owns control-plane evidence semantics:
 
-Typical order:
-1. static/lint/type checks relevant to the change;
-2. focused regression tests;
-3. affected integration/database tests;
-4. independent review/audit;
-5. full or formal validation at a phase gate.
+- which exact run/task/job/resource/result the evidence belongs to;
+- whether evidence is current, terminal, failed, invalid, or uncertain;
+- whether a state transition was actually re-observed;
+- preservation of failed/invalid evidence;
+- independent control-plane review at important gates;
+- result pullback and handoff.
 
-Do not run the entire project test/audit suite after every tiny change unless the project requires it.
+Domain Skills and project-local contracts own domain validation methods, thresholds, scientific criteria, test strategy, business acceptance, and other domain-quality judgments.
 
-## Audit separation
+Do not duplicate those methods here.
 
-At major gates, prefer an independent read-only review context that did not implement the change.
+## Verification
 
-Audit:
-- code correctness;
-- acceptance/control logic;
-- denominator/accounting;
+After a stateful action, use the cheapest authoritative observation that can establish what actually happened.
+
+Examples:
+
+- exact Task/Attempt terminal state;
+- same Job identity reaching a terminal state;
+- fresh Browser snapshot after navigation;
+- artifact existence/content identity after transfer;
+- project/domain validation evidence tied to the exact candidate/run.
+
+"Command ran" is not the same as "the intended validation passed."
+
+## Independent review
+
+At major gates, use an independent read-only review/audit context when the project/domain risk justifies it.
+
+The reviewer should verify control-plane facts such as:
+
+- correct identity and candidate/run selection;
+- evidence provenance;
+- stale-fence/generation avoidance;
 - failure containment;
-- lifecycle cleanup;
-- evidence integrity;
-- docs/config drift;
-- runtime restart/overlap behavior where relevant.
+- resource lifecycle/handoff;
+- acceptance-state bookkeeping;
+- no fabricated capability or hidden retry.
+
+Domain correctness remains owned by the appropriate project/domain methodology.
 
 ## Failure preservation
 
-A failed formal run remains failed historical evidence even after a code fix.
-
-A new candidate gets a new validation window.
+A failed formal run remains failed historical evidence even after a fix.
 
 Do not:
+
 - overwrite old evidence;
-- resume an invalid formal run;
+- resume an invalidated formal window as if it were clean;
 - hide a primary failure behind retry success;
-- cross-mask one source/class with another;
-- lower a frozen threshold merely to pass.
+- lower frozen thresholds/denominators merely to pass;
+- cross-mask one failure source/class with another.
+
+A materially changed candidate or protocol gets new evidence.
 
 ## Failure classification
 
-Before remediation, distinguish:
-- product correctness defect;
-- parser/schema defect;
-- source/hosting behavior;
-- network/transport issue;
-- third-party runtime/dependency behavior;
-- test contamination;
-- runner/control-plane defect;
-- acceptance/admission defect.
+Before remediation, identify the failing layer sufficiently to choose the right owner, for example:
 
-Fix the correct layer.
+- domain/product correctness;
+- parser/schema/data contract;
+- source/hosting;
+- network/transport;
+- third-party runtime/dependency;
+- test/experiment contamination;
+- Runner/control plane;
+- acceptance/admission logic;
+- missing capability or authority.
 
-## Evidence versus assertion
+Fix the correct layer rather than treating every failure as an implementation bug.
 
-"Tests ran" is not the same as "the intended tests ran".
-"Hash recorded" is not the same as "hash compared and enforced".
-"Task resolved" is not the same as "result delivered to the user".
+## Evidence versus delivery
 
-Prefer mechanical evidence.
+"Task resolved" is not the same as "result delivered to the user."
+
+When completion matters, verify both terminal state and substantive result/artifact pullback.

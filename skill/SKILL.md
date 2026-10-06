@@ -1,68 +1,105 @@
 ---
 name: webcodex-project-driver
-description: Drive substantial software-engineering projects through WebCodex with durable state, managed worktrees, Git checkpoints, short bounded execution batches, validation/audit gates, long-running Job recovery, explicit Session/Goal/Task identities, and interruption-safe handoffs. Use when ChatGPT is asked to implement, refactor, audit, debug, validate, operate, or continue a multi-step codebase project through WebCodex, especially when work may span multiple model turns, worktrees, branches, long-running processes, or independent audit/execution sessions.
+description: Drive substantial stateful work through WebCodex as a durable control plane. Use when ChatGPT must execute, continue, recover, or coordinate work whose real state lives in WebCodex projects, Sessions, Jobs, Goals/Tasks, resources, evidence, or handoffs across multiple steps or model turns. Keep exact identity, freshness/generation proof, authority, reconciliation, verification, and durable next-action state separate. Do not use it as a generic domain-methodology Skill or as permission to invent work when the user's objective is ambiguous.
 ---
 
 # WebCodex Project Driver
 
-Treat the project lifecycle as durable and the current model turn as disposable.
+Treat WebCodex as the durable execution/control plane and the current model turn as disposable.
 
-## Core rules
+## Core invariants
 
-1. Establish real state before acting. Use WebCodex to inspect the actual Project, exact Session when known, Git HEAD/ref/status, relevant validation/evidence, and known Jobs. Do not reconstruct repository truth from chat memory.
-2. Never use a browser tab/window as a task identity. Address exact Project, Session, Goal, AgentTask, Job, branch, and commit identities where they matter.
-3. Keep model turns short and bounded. Continue the overall project autonomously when safe, but split work into recoverable batches instead of one giant turn.
-4. For write work, isolate tasks with a WebCodex-managed worktree when parallelism, review, formal validation, or preservation of another workspace matters.
-5. Turn completed, validated work into durable Git checkpoints. Push important review/checkpoint branches when remote recovery materially reduces risk.
-6. Never redispatch a long-running operation merely because the chat/window was interrupted. Recover the exact Job/Task first.
-7. Separate implementation from independent audit at major gates.
-8. Preserve failed formal evidence. Do not lower thresholds, alter denominators, hide retries, or overwrite failed windows merely to obtain PASS.
-9. Gate optional capabilities on observed runtime configuration. Tool existence does not prove a provider, LSP server, Host continuation, plugin, or remote resource is configured.
-10. Return delegated results to the user. A resolved Session message or terminal Task is not sufficient if the result body was never surfaced.
+1. **Identity, freshness, authority are separate.** Before a stateful effect, know the durable object being addressed, the current fence/generation/snapshot/attempt proof when required, and the authority that permits the effect.
+2. **Observe real state before acting.** Use WebCodex and authoritative project artifacts, not chat memory, tab position, or assumed runtime configuration.
+3. **Reconcile uncertain outcomes before retry.** If prior work may already exist, inspect the exact existing Session/Task/Job/resource or replay key before dispatching replacement work.
+4. **Ambiguous objective is not permission to invent work.** Do not infer a new write task, evidence artifact, branch, push, experiment, or external mutation merely from repository/project contents. Preserve state and treat the missing objective/next action as a decision blocker unless an authoritative project contract already defines it.
+5. **Keep execution bounded.** Use short model batches that can finish, verify, persist, or hand off without making one reply carry an entire long-running stage.
+6. **Discover volatile runtime contracts live.** Use current WebCodex manifests/status/capability observations for tool schemas, providers, Host continuation, Browser/Computer, SSH, plugins, LSP, and other optional backends. Static Skill text owns stable policy, not volatile schemas.
+7. **Persist recoverable state when recovery matters.** Record objective, phase, active work identities, evidence/results, resources, last verified state, exact next action, and decision blockers in an appropriate durable store.
+8. **Preserve evidence.** Failed formal evidence remains failed history. Do not alter thresholds, denominators, retries, or source scope merely to convert FAIL to PASS.
+9. **Pull results back to the user.** Terminal/resolved backend state is not the same as substantive result delivery.
+10. **Respect ownership boundaries.** Project-local contracts and domain Skills own domain truth and quality methods; this Skill owns WebCodex control semantics.
 
-## Decide the execution mode
+## Core controller loop
 
-For a trivial read or tiny edit, use the simplest direct WebCodex path.
+For substantial work, use:
 
-For substantial work, use the project workflow in [references/execution-model.md](references/execution-model.md).
+```text
+OBSERVE
+-> RECONCILE
+-> ACT
+-> VERIFY
+-> PERSIST / HANDOFF
+```
 
-For write isolation and durable Git checkpoints, read [references/git-worktree-checkpoints.md](references/git-worktree-checkpoints.md).
+### OBSERVE
 
-For interruption, context loss, or ambiguous "continue" requests, read [references/interruption-recovery.md](references/interruption-recovery.md).
+Resolve only the state needed for the next decision:
 
-For long processes, background execution, server burn-in, or SSH, read [references/long-running-work.md](references/long-running-work.md).
+- exact Project and relevant durable run identity;
+- exact Session/Goal/Task/Job/resource identities already known;
+- freshness/generation/fence/snapshot selectors required by the next operation;
+- authority and current optional capability readiness;
+- last verified evidence and project-owned handoff state.
 
-For multi-Session, Goal, AgentTask, AgentWait, Conversation/Wake, or delegated-agent orchestration, read [references/orchestration.md](references/orchestration.md).
+Do not broadly rediscover the project when a valid checkpoint/handoff already identifies the needed delta.
 
-For testing, review, evidence, and acceptance gates, read [references/validation-audit.md](references/validation-audit.md).
+### RECONCILE
 
-For stage/phase closeout, retrospective, and cleanup, read [references/closeout-retrospective.md](references/closeout-retrospective.md).
+Before creating replacement work, determine whether the intended effect already started, completed, failed, or remains unknown.
 
-For WebCodex capability discovery and downgrade behavior, read [references/webcodex-capabilities.md](references/webcodex-capabilities.md).
+Uncertain outcome means **observe the same identity first**, not retry blindly.
 
-## Default controller loop
+### ACT
 
-For a substantial task:
+Perform one bounded authorized effect using current identity/freshness/authority. Acquire or attach only resources needed for that effect.
 
-1. Resolve the exact Project and current durable context.
-2. Verify the canonical predecessor/HEAD and workspace state.
-3. Identify the next bounded unit of work and its acceptance evidence.
-4. Create/reuse an isolated worktree when appropriate.
-5. Inspect only the necessary code/data path; avoid broad rereads when a valid checkpoint/handoff exists.
-6. Implement the bounded change.
-7. Run focused validation.
-8. Review the exact diff and workspace hygiene.
-9. Commit the validated unit; push when it is an important recovery boundary.
-10. Record/update the next exact action in durable project state when practical.
-11. Continue without asking the user unless a true decision boundary is reached.
-12. At major gates, run an independent audit/affected validation before promotion.
+If the objective itself is missing or ambiguous, do not create speculative work.
+
+### VERIFY
+
+Re-observe enough state to establish what actually changed. Treat state-changing Browser/Computer operations, fenced assignments, Task attempts, Job handoffs, and other generation-bound operations as freshness boundaries.
+
+### PERSIST / HANDOFF
+
+When recovery matters, persist:
+
+- current phase/status;
+- active exact identities;
+- evidence/result locations;
+- resource ownership;
+- last verified state;
+- exact next allowed action;
+- real decision blockers.
+
+Then continue automatically while the objective and authority remain clear, or stop at a true decision boundary.
+
+## References
+
+- For the generic control model and bounded execution semantics, read [references/execution-model.md](references/execution-model.md).
+- For cross-domain durable run state, read [references/durable-run-state.md](references/durable-run-state.md).
+- For Project Driver versus domain/project ownership, read [references/composition-boundaries.md](references/composition-boundaries.md).
+- For interruption and uncertain-outcome recovery, read [references/interruption-recovery.md](references/interruption-recovery.md).
+- For long Jobs, async/detached processes, and persistent shells, read [references/long-running-work.md](references/long-running-work.md).
+- For multi-Session/Goal/AgentTask/AgentWait orchestration, read [references/orchestration.md](references/orchestration.md).
+- For evidence, verification, failure preservation, and independent control-plane review, read [references/validation-audit.md](references/validation-audit.md).
+- For phase closeout, handoff, resources, and retrospective, read [references/closeout-retrospective.md](references/closeout-retrospective.md).
+- For live capability discovery and downgrade behavior, read [references/webcodex-capabilities.md](references/webcodex-capabilities.md).
+- For Git/worktree/commit behavior when Git is an authoritative software-project substrate, read [references/software-git-adaptation.md](references/software-git-adaptation.md).
 
 ## Decision boundaries
 
-Stop and ask for explicit authorization when the next action would change a frozen architecture/scope/acceptance contract, accept a material unresolved risk, perform destructive cleanup, or merge to a protected/default branch when the project policy reserves that decision for the user.
+Stop for genuine decisions such as:
 
-Do not stop for ordinary inspection, bounded implementation, tests, review-branch commit/push, safe worktree creation, or continued observation of already-started work.
+- the objective or next authorized action is materially ambiguous;
+- a frozen project architecture/scope/acceptance contract must change;
+- accepting a material unresolved risk instead of satisfying a required gate;
+- destructive cleanup or history rewrite;
+- protected/default-branch promotion when project policy reserves that decision;
+- missing authority or unavailable capability that materially changes the plan.
+
+Do not stop for routine observation, bounded authorized execution, continued observation of an already-started Job, evidence persistence, or non-destructive recovery mechanics.
 
 ## Recovery invariant
 
-After any interruption, first recover identity and evidence, then continue only the uncompleted delta. Never begin by "reading the whole repository again" unless durable recovery evidence is missing or stale.
+After interruption or uncertain delivery, recover exact identity and verified evidence first, then continue only the uncompleted delta. Never equate a browser/chat window, recent activity, or a stale selector with durable task identity.

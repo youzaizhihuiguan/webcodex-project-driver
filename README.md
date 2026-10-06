@@ -1,28 +1,56 @@
 # webcodex-project-driver
 
-A reusable workflow and ChatGPT Skill for running long-lived software-engineering projects through WebCodex without making the chat window the source of truth.
+A ChatGPT Skill for using WebCodex as a durable control plane for substantial stateful work across multiple steps, model turns, Jobs, Sessions, resources, evidence, and handoffs.
 
-The project was extracted from a real multi-day Stage 1 implementation/audit/soak cycle in KeyQuant. That work exposed recurring failure modes: long model turns getting interrupted, ambiguous resume targets, duplicate work after context loss, branch/worktree drift, long-running jobs being redispatched, historical failures being overwritten, and users manually relaying information between execution and audit windows.
+The project originated from a real multi-day software implementation/audit cycle, then was generalized only after benchmark and host evidence showed the same control failures across non-software WebCodex workflows.
 
-The repository turns those lessons into a reusable control protocol.
+## Core model
 
-## Core idea
+The current v0.2 model is:
 
-**Chat is the control surface. Durable project state lives elsewhere.**
+```text
+durable identity
++ freshness / generation proof
++ authority
+```
 
-Use:
-- WebCodex Project / Workflow Session for execution context;
-- Git commit + remote branch for durable engineering checkpoints;
-- managed worktrees for isolation;
-- Job identity for long-running execution;
-- validation evidence for PASS/FAIL;
-- explicit Session / Goal / Task IDs for recovery;
-- short bounded model turns instead of one giant turn;
-- independent audit at major gates.
+executed through:
 
-Do not infer state from phrases such as "the other window", "continue the last task", or "it should still be running".
+```text
+OBSERVE
+-> RECONCILE
+-> ACT
+-> VERIFY
+-> PERSIST / HANDOFF
+```
 
-## Repository layout
+Key rule:
+
+> uncertain outcome -> reconcile the exact prior identity before retry
+
+and:
+
+> ambiguous objective != permission to invent work
+
+## Scope
+
+Project Driver owns WebCodex control semantics:
+
+- exact Project/Session/Goal/Task/Job/resource identity;
+- freshness/fencing/generation discipline;
+- capability/provider discovery;
+- long-running Job/process lifecycle;
+- interruption recovery;
+- durable run state;
+- evidence/result handoff;
+- resource lifecycle;
+- decision boundaries.
+
+Project-local contracts and domain Skills continue to own domain truth and methodology.
+
+Git/worktree/checkpoint behavior is now an explicit software adaptation rather than a universal rule.
+
+## Skill layout
 
 ```text
 skill/
@@ -30,62 +58,32 @@ skill/
   agents/openai.yaml
   references/
     execution-model.md
-    git-worktree-checkpoints.md
+    durable-run-state.md
+    composition-boundaries.md
     interruption-recovery.md
     long-running-work.md
     orchestration.md
     validation-audit.md
     closeout-retrospective.md
     webcodex-capabilities.md
-
-docs/
-  architecture.md
-  research/webcodex-capability-map.md
-  history/stage1-lessons.md
-  experiments/README.md
-  decisions/0001-scope-and-source-of-truth.md
-
-ROADMAP.md
-CHANGELOG.md
+    software-git-adaptation.md
 ```
 
-## Current scope
+## Runtime freshness
 
-v0.1 is software-engineering first. It deliberately does not assume that delegated CodingAgent providers are configured. The control model is designed to generalize later to research, data-analysis, document, and other project workflows.
+Volatile WebCodex tool schemas and optional provider/backend availability are discovered from the live runtime. They are intentionally not copied into static Skill references.
 
-## Operating model
+## Routing policy
 
-For substantial work:
+Routing is evidence-driven. v0.2 does not attempt to become "more general" by stuffing research/browser/SSH/data keywords into metadata.
 
-```text
-Goal / user objective
-  -> exact project + canonical baseline
-  -> bounded task
-  -> isolated worktree when writing
-  -> focused validation
-  -> commit + push checkpoint
-  -> next bounded task
-  -> independent audit at major gates
-  -> long jobs tracked by exact job identity
-  -> closeout + retrospective + cleanup
-```
-
-A long project may take many model turns. A single model turn should stay short enough that interruption does not destroy meaningful progress.
-
-## Source of truth hierarchy
-
-For engineering state, prefer:
-1. exact Git commit / ref;
-2. WebCodex Project / Workflow Session identity;
-3. validation and runtime evidence;
-4. durable Job / Goal / Task identifiers;
-5. project documentation;
-6. chat transcript only as explanation and coordination.
-
-## History
-
-See [docs/history/stage1-lessons.md](docs/history/stage1-lessons.md) for the original Stage 1 lessons and [docs/research/webcodex-capability-map.md](docs/research/webcodex-capability-map.md) for the WebCodex capability research that motivated the architecture.
+Known host observations are recorded under `docs/benchmark/`.
 
 ## Development policy
 
-This repository is the canonical source. Packaged `skill.zip` files are release artifacts, not the editable source of truth. Future changes should be committed with rationale and, where possible, tested on a real project before being promoted as stable behavior.
+- Repository source is canonical.
+- `skill.zip` is a generated release artifact.
+- Non-trivial implementation happens on review branches/worktrees, not directly on `main`.
+- Failed formal evidence is preserved.
+- Large low-value smoke matrices should not be rerun when equivalent real host behavior has already been demonstrated.
+- KeyQuant is historical motivation only and is not modified by this project.

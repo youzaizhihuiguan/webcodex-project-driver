@@ -1,58 +1,51 @@
 # Orchestration
 
-## v0.1 default: Session-based controller
+## Default controller
 
-When delegated CodingAgent providers are unavailable, orchestrate with:
-- one controller;
-- explicit Workflow Sessions;
-- managed worktrees;
-- Session assignments/messages;
-- durable Git checkpoints;
-- Jobs;
-- independent read-only audit Sessions.
+Use one controller with explicit durable identities. Add Sessions, Goals, AgentTasks, Jobs, resources, or independent audit contexts only when they materially help the objective.
+
+Do not require Git/worktrees merely because orchestration is multi-step.
+
+## Workflow Sessions
 
 Use exact Session IDs. Do not address work by tab/window position.
 
+For executable Session collaboration, prefer the strongest current fenced assignment/completion pattern available from the live runtime rather than casual messages when mutation/terminal truth matters.
+
 ## Durable Goal
 
-Use a Goal for genuinely multi-step/cross-turn work when the runtime supports it and the added state is useful.
+Use a Goal for genuinely multi-step/cross-turn work when the runtime supports it and the extra durable planning state is useful.
 
-Goal steps are durable plan markers, not executable instructions. The controller must still verify evidence before checkpointing/completing them.
+Goal steps are durable plan markers, not proof of execution. Verify evidence before checkpointing/completing them.
 
-## Session assignment
+## AgentTask / delegated execution
 
-For executable Session collaboration, prefer a fenced assignment pattern where available:
-- create/post a todo;
-- worker reads the exact assignment snapshot;
-- worker completes it using the returned fence.
+Before delegation:
 
-This is stronger than a casual message.
+1. discover current provider/backend readiness;
+2. create/address the exact Task/Attempt identities required by the live contract;
+3. preserve attempt fence/controller generation or equivalent freshness proof;
+4. dispatch only through a confirmed available backend;
+5. reconcile terminal state before accepting worker claims;
+6. pull substantive results back into the controller/user response.
 
-## Durable Agent / Conversation / Wake
+Never let a stale worker write terminal truth.
 
-These primitives may support automatic continuation, but do not assume the Host actually schedules a new model turn until tested end-to-end.
+## Durable Agent / continuation / waits
 
-A durable message being queued is not the same as a model being awake.
+Conversation/Wake/Endpoint/AgentWait primitives may support automatic continuation, but an API being exposed does not prove the Host will schedule a fresh model turn.
 
-## AgentTask path
-
-If a configured execution backend is available:
-
-```text
-create AgentTask
--> assign exact Agent
--> start Attempt
--> dispatch CodingAgentRun or Endpoint continuation
--> heartbeat long Attempt when required
--> reconcile/complete exact Attempt
-```
-
-Respect Attempt fences and controller generations. Never let a stale worker write terminal truth.
-
-## AgentWait
-
-Use any/all waits to implement fan-out/fan-in only after the Task and continuation paths have been validated in the current environment.
+Use these only after current Host/Runner readiness is observed.
 
 ## Capability downgrade
 
-If delegated execution is unavailable, fall back to Session-based orchestration instead of pretending the task was delegated.
+If delegated execution is unavailable:
+
+- keep the same objective and durable run state;
+- fall back to controller/Workflow Session/Job execution or another currently available path;
+- do not pretend delegation occurred;
+- do not invent a provider or backend because the API exists.
+
+## Fan-out / fan-in
+
+Use multiple workers only when the work can be separated with clear identity, authority, evidence ownership, and result reconciliation. Keep auditors read-only by default when independence matters.

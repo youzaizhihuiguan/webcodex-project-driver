@@ -1,41 +1,47 @@
 # Closeout and Retrospective
 
-## Phase closeout
+## Control-plane closeout
 
 At a phase/stage closeout:
-1. verify canonical commit/ref;
-2. verify workspace hygiene;
-3. verify required validation;
-4. preserve failed formal evidence;
-5. synchronize authoritative project status docs;
-6. record accepted/deferred risks separately from strict PASS/FAIL;
-7. close obsolete Workflow Sessions when appropriate;
-8. defer destructive worktree/branch cleanup until evidence is safe.
 
-## Engineering closeout versus strict acceptance
+1. verify the intended objective/phase status;
+2. verify required domain/project evidence exists and belongs to the exact run/candidate;
+3. preserve failed/invalid formal evidence;
+4. update durable run state and authoritative project status;
+5. record accepted/deferred risks separately from strict PASS/FAIL;
+6. surface substantive delegated results/artifacts;
+7. hand off or release owned/borrowed resources according to policy;
+8. close obsolete Sessions/Tasks/Jobs only when doing so cannot destroy needed recovery evidence;
+9. leave an exact next action when more work remains.
 
-These may differ.
+For Git/worktree cleanup in software projects, use [software-git-adaptation.md](software-git-adaptation.md).
 
-A phase can be engineering-complete with an explicitly accepted operational risk while a strict formal stability window remains FAIL evidence.
+## Completion versus strict acceptance
 
-Never relabel the old FAIL as PASS.
+Operational/engineering completion and strict domain acceptance may differ.
+
+Do not relabel old FAIL evidence merely because the project chooses to proceed with an explicitly accepted risk.
+
+## Resource cleanup
+
+Before destructive cleanup, verify:
+
+- ownership;
+- persistence expectations;
+- whether another worker/run still depends on the resource;
+- whether unique evidence or uncommitted state remains;
+- whether the project requires explicit authorization.
+
+Failure cleanup should preserve recoverability first.
 
 ## Retrospective
 
-Ask implementation and audit roles separately:
-- what execution rule worked best?
-- what wasted the most effort?
-- what failed because of tool/runtime behavior?
-- what state should have been checkpointed earlier?
-- what should the next phase preserve or change?
+Collect lessons about:
 
-Collect the substantive answers into the controller. Do not merely report message IDs.
+- which control rule prevented duplicate/stale work;
+- what state should have been persisted earlier;
+- which capability/runtime assumption was wrong;
+- what caused unnecessary rediscovery;
+- where domain ownership versus control-plane ownership was unclear.
 
-## Promote only general lessons
-
-Separate:
-- project-specific rules;
-- WebCodex/tool behavior;
-- general durable-project workflow.
-
-Only the last two categories belong in this reusable Skill unless a project-specific example is clearly labelled as history.
+Promote only stable WebCodex/control lessons into this Skill. Keep project-specific/domain methodology in the owning project or domain Skill.

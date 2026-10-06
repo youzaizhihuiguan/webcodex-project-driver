@@ -2,124 +2,133 @@
 
 ## Problem
 
-A long engineering project has a lifecycle measured in hours or days. A ChatGPT model turn has a much shorter and less reliable lifecycle. Treating those two lifecycles as the same creates repeated work and ambiguous state.
+Substantial WebCodex work may outlive a single model turn and may involve durable Sessions, Jobs, Goals/Tasks, resources, artifacts, evidence, and changing runtime capabilities.
 
-The architecture therefore separates:
+The controller therefore cannot treat chat memory or a browser window as authoritative execution state.
 
-- **intent**: Goal / user objective;
-- **execution context**: WebCodex Project and Workflow Session;
-- **workspace**: checkout or managed worktree;
-- **durable source state**: Git commits and refs;
-- **runtime state**: Jobs, shells, remote resources;
-- **validation state**: explicit evidence;
-- **communication**: Session messages, assignments, Conversations;
-- **delegation**: AgentTask / CodingAgentRun when available;
-- **presentation**: ChatGPT window.
+## Core state model
 
-## Identity rule
-
-Never infer one durable identity from another.
-
-A ChatGPT Window is not a Workflow Session.
-A Workflow Session is not a Project.
-A Project is not a Git branch.
-A branch name is not an exact commit.
-An Agent identity is not execution authority.
-A Task correlation does not grant Project access.
-A message does not prove that a model turn was triggered.
-
-Always carry the exact identifier required by the next operation.
-
-## Control plane
-
-Default v0.1 flow:
+For every stateful WebCodex effect, separate:
 
 ```text
-Human objective
-  |
-  v
-Controller model turn
-  |
-  +-- exact Project / Session discovery
-  +-- canonical Git baseline
-  +-- task decomposition
-  |
-  v
-bounded execution batch
-  |
-  +-- managed worktree if writing
-  +-- read / edit
-  +-- focused validation
-  +-- review
-  +-- commit / push checkpoint
-  |
-  v
-next short controller turn
+durable identity
++
+freshness / generation proof
++
+authority
 ```
 
-Long-running work leaves the model turn:
+Examples:
+
+- identity: Project, Session, Goal, Task, Job, page, resource;
+- freshness: assignment fence, Attempt generation, snapshot/ref, observation token, replay selector;
+- authority: project/runtime/user permission for the requested effect.
+
+One does not substitute for another.
+
+## Universal controller loop
 
 ```text
-short controller turn
-  -> start/reuse exact Job
-  -> persist job identity / manifest
-  -> yield
-  -> later observe the same Job
-  -> decide in a new turn
+OBSERVE
+-> RECONCILE
+-> ACT
+-> VERIFY
+-> PERSIST / HANDOFF
 ```
 
-## Why short batches
+### OBSERVE
 
-A project should continue autonomously where safe, but a model turn should not accumulate hours of mutable state. Each batch should have one bounded objective, one validation boundary, and one recoverable checkpoint.
+Read the exact current state needed for the next decision, including live capability readiness when an optional backend is under consideration.
 
-This is not the same as asking the user "continue?" after every task. The controller continues automatically unless a true decision boundary is reached.
+### RECONCILE
 
-## Decision boundaries
+If prior execution may already exist, inspect the exact existing identity before creating replacement work.
 
-Pause for:
-- frozen architecture/scope changes;
-- threshold/denominator/acceptance changes;
-- destructive cleanup;
-- risk acceptance;
-- protected/default branch merge when policy requires approval;
-- missing authority or unavailable capability that materially changes the plan.
+### ACT
 
-Do not pause for routine:
-- worktree creation;
-- focused tests;
-- bounded bug fixes;
-- review-branch commit/push;
-- non-destructive inspection;
-- continuing an already-authorized Job.
+Perform one bounded authorized effect with current identity/freshness/authority.
+
+### VERIFY
+
+Re-observe enough state to prove the intended transition or preserve explicit uncertainty.
+
+### PERSIST / HANDOFF
+
+When recovery matters, durably record:
+
+- objective;
+- phase/status;
+- active identities;
+- evidence/results;
+- resource ownership;
+- last verified state;
+- exact next action;
+- decision blockers.
+
+## Objective authority
+
+A durable control plane does not create its own business/domain objective.
+
+If the user/project has not defined the actual next objective, repository contents are not permission to invent:
+
+- implementation tasks;
+- evidence;
+- branches;
+- pushes;
+- experiments;
+- other external mutations.
+
+Missing objective is a decision blocker unless an authoritative project contract already defines the next action.
+
+## Composition
+
+Subject to platform/runtime authority:
+
+```text
+project-local explicit contract
+> domain Skill domain-quality rules
+> Project Driver generic control heuristics
+```
+
+Project Driver still owns WebCodex identity/freshness/recovery semantics.
+
+## Software adaptation
+
+Git commit/ref/worktree state is authoritative when the target project uses Git as a source-of-truth substrate.
+
+In that case, software work may adapt the universal loop with:
+
+- exact HEAD/ref/status observation;
+- managed worktree isolation;
+- focused project-owned validation;
+- bounded commit/checkpoint;
+- review branch push;
+- Git-aware cleanup.
+
+These are not universal requirements for research, browser, data, artifact, or other non-Git workflows.
+
+## Long-running work
+
+Long execution gets its own durable identity.
+
+Do not keep a model turn open merely because a process is long. Choose Runner-owned Job, async Job, detached supervisor process, persistent shell, or another primitive according to lifecycle and ownership requirements, then recover the same identity later.
 
 ## Capability gating
 
-Tool existence is not the same as configured availability.
+Tool/API exposure is not the same as configured readiness.
 
-Examples:
-- AgentTask infrastructure may exist while no CodingAgent provider is configured;
-- LSP tools may exist while pyright/gopls/rust-analyzer are unavailable;
-- browser/computer capabilities vary by Runner;
-- automatic continuation depends on both durable Endpoint state and an active Host carrier.
+Volatile tool schemas, providers, Host continuation readiness, Browser/Computer support, SSH resources, plugins, LSP, and similar optional paths come from live runtime observation rather than static Skill copies.
 
-Every optional path must have a downgrade path.
+## Evidence and closeout
 
-## Future architecture
+Control-plane completion requires more than "task resolved":
 
-Once delegated providers and continuation are proven:
+- evidence must belong to the intended run/candidate;
+- failed formal evidence is preserved;
+- delegated result bodies/artifacts are pulled back;
+- resources are handed off/released deliberately;
+- exact next action remains durable when work continues.
 
-```text
-Durable Goal
-    |
-Controller Agent
-    |
-    +-- AgentTask A -> CodingAgentRun -> worktree A
-    +-- AgentTask B -> CodingAgentRun -> worktree B
-    +-- Auditor Task -> read-only review
-    |
- AgentWait(all)
-    |
- Controller wake
-    |
- checkpoint Goal / dispatch next batch
-```
+## Future direction
+
+Durable Goal/Agent orchestration and Host continuation remain optional capability-gated paths until demonstrated end-to-end in the active environment.

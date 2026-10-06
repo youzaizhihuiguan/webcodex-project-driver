@@ -1,27 +1,42 @@
 # Roadmap
 
-## v0.1 - durable software-engineering workflow
+## v0.1 — durable software-engineering workflow
 
-Goal: make long WebCodex-assisted engineering work recoverable, auditable, and resistant to chat-window interruption.
+Status: released baseline.
 
-Status: initial implementation.
+Established:
 
-## v0.2 - real-project hardening
+- exact Session/Project/Job recovery;
+- short bounded batches;
+- worktree/Git checkpoint discipline;
+- long Job lifecycle;
+- capability gating;
+- result pullback;
+- failure-evidence preservation;
+- decision boundaries.
 
-Use the Skill on at least one post-Stage-1 hardening cycle and one new project phase. Record:
-- false triggers;
-- overlong model turns;
-- unnecessary repository rereads;
-- checkpoint frequency;
-- recovery accuracy;
-- audit/implementation separation;
-- user-visible result handoff failures.
+## v0.2 — WebCodex control plane
 
-Refine only from observed failures.
+Status: implementation/review.
 
-## v0.3 - durable Goal workflow
+Goals:
+
+- make `durable identity + freshness/generation proof + authority` the core state model;
+- make `OBSERVE -> RECONCILE -> ACT -> VERIFY -> PERSIST/HANDOFF` the universal loop;
+- promote reconcile-before-retry to a core invariant;
+- forbid invented work under ambiguous objectives;
+- add cross-domain durable run state;
+- define Project Driver versus domain Skill ownership;
+- keep volatile runtime schemas in live manifests;
+- move Git/worktree/checkpoint semantics into a software-specific adaptation;
+- preserve routing behavior unless real eval evidence justifies change.
+
+Promotion uses focused regressions rather than repeating already-proven broad smoke coverage.
+
+## v0.3 — durable Goal workflow
 
 Experiment with:
+
 - Goal admission;
 - Goal checkpoints;
 - exact Session correlation;
@@ -30,41 +45,30 @@ Experiment with:
 
 Do not promote Goal workflow to mandatory until recovery behavior is demonstrated end-to-end.
 
-## v0.4 - Agent orchestration
+## v0.4 — Agent orchestration
 
-When the runtime has a configured CodingAgent provider:
+When a configured execution provider is actually available:
+
 - durable Controller Agent;
-- AgentTask + Attempt + fence;
-- delegated CodingAgentRun;
+- AgentTask + Attempt + freshness fencing;
+- delegated execution;
 - AgentWait fan-out/fan-in;
-- result collection into the Controller;
-- stale-attempt protection.
+- result reconciliation and pullback.
 
-## v0.5 - Host continuation
+## v0.5 — Host continuation
 
-Test Conversation/Inbox/Wake and Agent continuation against the actual ChatGPT host. Target:
-- dispatch in one short model turn;
-- background work or external event;
-- durable wake;
-- new short controller turn;
-- no manual "continue" message.
+Validate Host continuation end-to-end rather than assuming API exposure equals wake readiness.
 
-## v1.0 - multi-project stable workflow
+## v1.0 — stable multi-domain WebCodex control plane
 
 Requirements:
-- validated across several unrelated software projects;
-- interruption/recovery tested;
+
+- validated across multiple unrelated projects/workflow types;
+- interruption/uncertain-outcome reconciliation tested;
 - long-job recovery tested;
-- explicit capability downgrade paths tested;
-- low false-trigger rate;
-- stable repository/release process.
+- optional capability downgrade paths tested;
+- low harmful false-trigger rate;
+- clear composition with domain Skills;
+- stable package/release process.
 
-## Later: non-software project types
-
-Preserve the durable-project control plane and add domain references for:
-- research;
-- data analysis;
-- document-heavy projects;
-- browser/desktop operational workflows.
-
-Do not prematurely generalize the software-specific validation and Git rules.
+Do not turn the Skill into a universal monolith.

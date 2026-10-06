@@ -1,3 +1,3 @@
 interface:
   display_name: "WebCodex Project Driver"
-  short_description: "Run long software projects with durable WebCodex checkpoints and recovery."
+  short_description: "Control substantial WebCodex work with durable state, recovery, and handoff."

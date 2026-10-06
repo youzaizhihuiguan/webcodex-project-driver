@@ -1,47 +1,54 @@
 # Interruption and Recovery
 
-## Do not infer from the browser tab
+## Identity is not window position
 
-A ChatGPT window may resume or be associated with a different Workflow Session than expected.
+A ChatGPT window/tab, recent Project activity, or a phrase such as "the previous task" does not uniquely identify a Workflow Session, Goal, Task, Job, or resource.
 
-Bad:
-- "continue in the audit window";
-- "use the previous tab";
-- "pick up where you left off".
-
-Good:
-- resume exact `wc_sess_...`;
-- inspect exact Goal/Task/Job IDs;
-- verify exact Project and Git state.
+Prefer exact durable identifiers and authoritative handoff state.
 
 ## Recovery sequence
 
-After truncation, host interruption, a new window, or missing context:
+After truncation, host interruption, a new window, uncertain tool delivery, or missing context:
 
-1. resolve exact Project;
-2. list/recover Sessions only if the exact Session is genuinely unknown;
-3. explicitly select/resume the correct Session;
-4. read unresolved assignment/message state;
-5. inspect HEAD/ref/status;
-6. inspect known Job identities;
-7. inspect latest validation/evidence;
-8. continue only the missing delta.
+1. resolve the required WebCodex Project/execution context;
+2. recover exact known durable identities from the current handoff/run state;
+3. if identity is genuinely unknown, discover candidates narrowly and reconcile them before mutation;
+4. inspect unresolved assignment/message/task state relevant to the intended objective;
+5. inspect known active Jobs/resources before redispatch;
+6. verify the latest evidence and last known state;
+7. continue only the missing authorized delta.
 
-## Never duplicate uncertain work
+For Git-based software recovery, additionally use [software-git-adaptation.md](software-git-adaptation.md).
 
-If an operation may already have started:
-- observe/reconcile the existing identity;
-- reuse idempotency/replay keys when the contract requires them;
-- do not create a replacement Job/Task merely because the previous response was lost.
+## Uncertain outcome -> reconcile before retry
+
+If an operation may already have started or committed an effect:
+
+- observe/reconcile the exact existing identity;
+- reuse the live contract's idempotency/replay key when applicable;
+- treat stale fences/generations/snapshots as invalid until refreshed;
+- do not create a replacement Job/Task/resource merely because the response was lost;
+- if the effect cannot be proven either way, preserve the uncertainty explicitly and choose a safe reconciliation path.
+
+This rule applies to transport timeouts, lost model responses, Browser/Computer actions, Session assignment completion, Task attempts, Job handoff, artifact transfer, and other stateful effects.
+
+## Ambiguous continuation
+
+If the user says only "continue" and no exact unfinished objective can be recovered from authoritative durable state:
+
+- do not choose work based on repository contents;
+- do not create evidence, branches, pushes, experiments, or write tasks to manufacture progress;
+- report the missing objective/identity as the blocker.
 
 ## Result delivery
 
-A backend task may be complete while the user-visible chat only reports status.
+Backend completion and user-visible delivery are separate checks.
 
 After delegated/session work completes:
-1. fetch the answer/result body;
-2. verify it corresponds to the expected task;
-3. surface the substantive result to the user;
-4. then report durable IDs/status as supporting metadata.
+
+1. fetch the substantive result body or artifact;
+2. verify it corresponds to the intended assignment/task;
+3. surface the result to the user;
+4. use IDs/status only as supporting metadata.
 
 Do not make the user manually retrieve the result from a Session ledger.
