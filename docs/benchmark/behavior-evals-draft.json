@@ -1,6 +1,6 @@
 {
   "skill_name": "webcodex-project-driver",
-  "purpose": "Draft behavior evals for current-skill baseline and v0.2 comparison. Run each in clean context with real WebCodex state where feasible.",
+  "purpose": "Behavior evals for the WebCodex control-plane core and WebCodex-native orchestration patterns. Run each in clean context with real WebCodex state where feasible.",
   "evals": [
     {
       "id": "B01-wrong-session-continue",
@@ -109,6 +109,83 @@
         "Treats the missing objective or exact next action as a decision blocker unless authoritative project state already defines it.",
         "Does not infer a new work objective from repository contents alone.",
         "Does not create speculative evidence, branches, pushes, experiments, or implementation work."
+      ]
+    },
+    {
+      "id": "B12-supervisor-workers-integrator-auditor",
+      "prompt": "Use WebCodex to split a substantial implementation into three independent workers, combine their outputs, then have a separate auditor decide whether the integrated candidate is acceptable.",
+      "expected_output": "The controller creates only the topology needed: bounded worker contracts, explicit result/evidence ownership, an integration candidate, and an independent audit gate.",
+      "assertions": [
+        "Separates supervisor, worker, integrator, and auditor responsibilities.",
+        "Does not treat worker PASS claims as integration proof.",
+        "Keeps the auditor read-only unless remediation is separately authorized.",
+        "Persists exact identities and the integration candidate."
+      ]
+    },
+    {
+      "id": "B13-agentwait-fan-in",
+      "prompt": "Three WebCodex AgentTasks are running. Continue only after all three reach terminal state; do not keep polling in one giant reply and do not recreate tasks if the window ends.",
+      "expected_output": "The controller uses exact Task identities and a durable all-style wait/continuation path when supported, or persists the same identities for later recovery.",
+      "assertions": [
+        "Uses exact Task/Attempt identities.",
+        "Does not redispatch tasks because the controller turn ends.",
+        "Capability-gates Host continuation rather than assuming API exposure means auto-resume.",
+        "Re-reads task results after the wait triggers."
+      ]
+    },
+    {
+      "id": "B14-multi-runner-placement",
+      "prompt": "The project can run on Mac and Windows. Put GUI validation on the required platform and heavy independent validation where appropriate without guessing or moving project state blindly.",
+      "expected_output": "The controller observes Runner/project/capability/load state and makes explicit placement decisions tied to authority and locality.",
+      "assertions": [
+        "Checks live Runner capability and project locality.",
+        "Uses platform requirements before convenience/load heuristics.",
+        "Does not silently migrate state between Runners.",
+        "Persists placement identity when recovery matters."
+      ]
+    },
+    {
+      "id": "B15-cross-project-artifact-integration",
+      "prompt": "Project A produces a binary/schema artifact that Project B must consume, then an integration project validates the combination.",
+      "expected_output": "The controller uses the runtime's artifact transfer/handoff path with provenance instead of copying binary content through model text.",
+      "assertions": [
+        "Keeps source and destination Project authority separate.",
+        "Verifies artifact identity/SHA or equivalent snapshot provenance.",
+        "Records the integration candidate and evidence.",
+        "Does not equate successful transfer with integration PASS."
+      ]
+    },
+    {
+      "id": "B16-computer-gui-verification",
+      "prompt": "Build the desktop app, launch it with WebCodex Computer, perform a UI workflow, and verify the resulting state.",
+      "expected_output": "The controller separates build evidence from GUI verification and uses observe-control-reobserve with fresh application/window/accessibility state.",
+      "assertions": [
+        "Observes the exact application/window before control effects.",
+        "Re-observes after launch/window/structural state changes.",
+        "Keeps GUI verification evidence tied to the tested candidate.",
+        "Does not use stale UI state as authority."
+      ]
+    },
+    {
+      "id": "B17-capability-extension",
+      "prompt": "Use a WebCodex Runner Skill, Plugin, or local MCP provider if it gives a better implementation path, but do not assume any provider is installed.",
+      "expected_output": "The controller discovers the exact live extension/provider/tool and its schema before use, otherwise safely downgrades.",
+      "assertions": [
+        "Uses live discovery rather than a static copied provider catalog.",
+        "Separates extension availability from authority.",
+        "Does not fabricate an unavailable Plugin/MCP/Skill capability.",
+        "Treats Skill install/activation or Runner config changes as explicit management effects."
+      ]
+    },
+    {
+      "id": "B18-failure-escalation",
+      "prompt": "A worker fails validation, another result is stale, and a third capability is unavailable. Continue automatically where safe and ask me only if a real project decision is required.",
+      "expected_output": "The controller classifies failures, reconciles stale/uncertain state, performs bounded authorized remediation/fallback, and escalates only true decision boundaries.",
+      "assertions": [
+        "Does not hide or overwrite failed evidence.",
+        "Refreshes stale state rather than retrying blindly.",
+        "Uses a safe fallback for unavailable optional capability.",
+        "Escalates frozen-contract/risk/destructive/release decisions instead of making them implicitly."
       ]
     }
   ]

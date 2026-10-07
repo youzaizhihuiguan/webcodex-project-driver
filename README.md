@@ -1,58 +1,96 @@
 # webcodex-project-driver
 
-A ChatGPT Skill for using WebCodex as a durable control plane for substantial stateful work across multiple steps, model turns, Jobs, Sessions, resources, evidence, and handoffs.
-
-The project originated from a real multi-day software implementation/audit cycle, then was generalized only after benchmark and host evidence showed the same control failures across non-software WebCodex workflows.
+A ChatGPT Skill for using WebCodex as a durable execution/control plane for substantial stateful work across Projects, Sessions, Jobs, Goals/Tasks, Agents, Runners, surfaces, resources, evidence, and handoffs.
 
 ## Core model
 
-The current v0.2 model is:
-
-```text
+~~~text
 durable identity
 + freshness / generation proof
 + authority
-```
+~~~
 
 executed through:
 
-```text
+~~~text
 OBSERVE
 -> RECONCILE
 -> ACT
 -> VERIFY
 -> PERSIST / HANDOFF
-```
+~~~
 
-Key rule:
+Key rules:
 
 > uncertain outcome -> reconcile the exact prior identity before retry
 
-and:
-
 > ambiguous objective != permission to invent work
 
-## Scope
+## WebCodex-native coverage
+
+The Skill does not freeze the current WebCodex API into static instructions.
+
+Instead it:
+
+- discovers the complete current runtime capability surface live;
+- classifies capabilities by lifecycle/effect/authority;
+- selects the smallest sufficient primitive;
+- loads exact schemas only when needed;
+- applies stable control invariants to newly added tools;
+- safely downgrades when a capability/provider/Host path is not ready.
+
+This keeps the Skill compatible with a changing WebCodex runtime while still providing opinionated orchestration behavior.
+
+## High-value orchestration patterns
+
+v0.3 adds:
+
+~~~text
+Supervisor / Controller
+        |
+        +-- Worker(s)
+        |
+        +-- optional Integrator
+        |
+        +-- independent Auditor
+~~~
+
+plus:
+
+- AgentTask/Attempt and AgentWait fan-out/fan-in;
+- event-driven Job/Agent continuation;
+- multi-Runner placement;
+- Browser/Computer/SSH workflows;
+- cross-Project artifact/integration pipelines;
+- Runner Skill/Plugin/local-MCP extension;
+- automatic safe remediation and explicit escalation boundaries.
+
+## Current runtime caveat
+
+The control model supports delegated Agent execution, but actual CodingAgent dispatch is capability-gated. If the active Runner has no configured provider, the controller must use Session/Job/controller execution rather than pretend a delegated worker ran.
+
+## Ownership
 
 Project Driver owns WebCodex control semantics:
 
-- exact Project/Session/Goal/Task/Job/resource identity;
+- exact durable identity;
 - freshness/fencing/generation discipline;
-- capability/provider discovery;
+- runtime/capability/provider discovery;
+- topology and placement;
 - long-running Job/process lifecycle;
 - interruption recovery;
 - durable run state;
-- evidence/result handoff;
 - resource lifecycle;
+- evidence/result/integration handoff;
 - decision boundaries.
 
 Project-local contracts and domain Skills continue to own domain truth and methodology.
 
-Git/worktree/checkpoint behavior is now an explicit software adaptation rather than a universal rule.
+Git/worktree/checkpoint behavior remains an explicit software adaptation rather than a universal rule.
 
 ## Skill layout
 
-```text
+~~~text
 skill/
   SKILL.md
   agents/openai.yaml
@@ -63,27 +101,23 @@ skill/
     interruption-recovery.md
     long-running-work.md
     orchestration.md
+    runner-placement.md
+    event-driven-continuation.md
+    cross-surface-operations.md
+    autonomy-escalation.md
     validation-audit.md
     closeout-retrospective.md
     webcodex-capabilities.md
     software-git-adaptation.md
-```
-
-## Runtime freshness
-
-Volatile WebCodex tool schemas and optional provider/backend availability are discovered from the live runtime. They are intentionally not copied into static Skill references.
-
-## Routing policy
-
-Routing is evidence-driven. v0.2 does not attempt to become "more general" by stuffing research/browser/SSH/data keywords into metadata.
-
-Known host observations are recorded under `docs/benchmark/`.
+~~~
 
 ## Development policy
 
 - Repository source is canonical.
-- `skill.zip` is a generated release artifact.
-- Non-trivial implementation happens on review branches/worktrees, not directly on `main`.
+- skill.zip is a generated release artifact.
+- Non-trivial implementation happens on review branches/worktrees, not directly on main.
 - Failed formal evidence is preserved.
-- Large low-value smoke matrices should not be rerun when equivalent real host behavior has already been demonstrated.
-- KeyQuant is historical motivation only and is not modified by this project.
+- Runtime/provider truth comes from live WebCodex discovery.
+- Broad capability coverage must not become domain-methodology duplication.
+- Large low-value smoke matrices should not be rerun when equivalent real behavior has already been demonstrated.
+- KeyQuant is not modified by this project.

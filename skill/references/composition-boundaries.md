@@ -12,7 +12,7 @@ Project Driver does not override a stricter project contract or replace domain e
 
 ## Project Driver owns
 
-- runtime/capability discovery;
+- runtime/capability/provider discovery;
 - exact durable identity;
 - freshness/generation/fence discipline;
 - authority checks for WebCodex effects;
@@ -20,9 +20,13 @@ Project Driver does not override a stricter project contract or replace domain e
 - reconcile-before-retry;
 - Job/process lifecycle;
 - resource ownership/lifecycle;
-- Session/Goal/Task orchestration;
+- Session/Goal/Agent/Task/Attempt/Wait orchestration;
+- event-driven continuation readiness and recovery;
+- Runner/surface placement;
+- cross-surface and cross-Project control semantics;
+- integration-candidate and control-plane evidence provenance;
 - interruption recovery;
-- evidence/result handoff;
+- evidence/result/artifact handoff;
 - exact next-action persistence;
 - control-plane decision boundaries.
 

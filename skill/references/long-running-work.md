@@ -18,15 +18,23 @@ Use detached/supervisor-owned execution only when restart survivability actually
 
 Use a persistent Session shell/SSH resource only when retaining remote shell state, environment, or interactive context is useful. Do not create one merely because several one-shot commands are needed.
 
+### Durable delegated work
+
+When a durable AgentTask/Attempt owns long work, keep Task/Attempt freshness separate from the execution backend's own Job/CodingAgentRun identity. Heartbeat or renew only according to the live contract; never assume ordinary polling or Agent presence extends an Attempt lease.
+
+When the controller only needs terminal attention, prefer a supported AgentWait/Job-wait/Endpoint-Wake path over keeping one model turn open. See [event-driven-continuation.md](event-driven-continuation.md).
+
 ## Durable state for long work
 
 For costly or formal long work, persist enough to recover:
 
 - objective and phase;
-- exact Job/process/shell/resource identity;
+- exact Task/Attempt/Job/process/shell/resource identity as applicable;
+- execution backend identity when Task ownership and execution are separate;
 - launch/start evidence;
-- owner/supervisor;
+- owner/supervisor and Runner placement;
 - relevant configuration or input identity;
+- Wait/Wake/continuation identity when terminal attention is armed;
 - last observation and terminal/failure reason when known;
 - evidence/result location;
 - exact next action;

@@ -2,7 +2,7 @@
 
 ## Identity is not window position
 
-A ChatGPT window/tab, recent Project activity, or a phrase such as "the previous task" does not uniquely identify a Workflow Session, Goal, Task, Job, or resource.
+A ChatGPT window/tab, recent Project activity, or a phrase such as "the previous task" does not uniquely identify a Workflow Session, Goal, durable Agent, Task/Attempt, AgentWait/Wake, CodingAgentRun, Job, Runner placement, or resource.
 
 Prefer exact durable identifiers and authoritative handoff state.
 
@@ -10,13 +10,14 @@ Prefer exact durable identifiers and authoritative handoff state.
 
 After truncation, host interruption, a new window, uncertain tool delivery, or missing context:
 
-1. resolve the required WebCodex Project/execution context;
+1. resolve the required WebCodex Project/Runner execution context;
 2. recover exact known durable identities from the current handoff/run state;
 3. if identity is genuinely unknown, discover candidates narrowly and reconcile them before mutation;
-4. inspect unresolved assignment/message/task state relevant to the intended objective;
-5. inspect known active Jobs/resources before redispatch;
-6. verify the latest evidence and last known state;
-7. continue only the missing authorized delta.
+4. inspect unresolved Session assignment/message, Goal, Task/Attempt, Wait/Wake, or delegated-run state relevant to the objective;
+5. inspect known active Jobs/resources and the prior placement before redispatch or migration;
+6. recover the exact integration/audit candidate when parallel work had already converged;
+7. verify the latest evidence and last known state;
+8. continue only the missing authorized delta.
 
 For Git-based software recovery, additionally use [software-git-adaptation.md](software-git-adaptation.md).
 
@@ -30,7 +31,7 @@ If an operation may already have started or committed an effect:
 - do not create a replacement Job/Task/resource merely because the response was lost;
 - if the effect cannot be proven either way, preserve the uncertainty explicitly and choose a safe reconciliation path.
 
-This rule applies to transport timeouts, lost model responses, Browser/Computer actions, Session assignment completion, Task attempts, Job handoff, artifact transfer, and other stateful effects.
+This rule applies to transport timeouts, lost model responses, Browser/Computer actions, Session assignment completion, Task attempts, CodingAgent dispatch/reconciliation, Endpoint/Wake generations, AgentWait, Job handoff, Runner migration, artifact transfer, and other stateful effects.
 
 ## Ambiguous continuation
 

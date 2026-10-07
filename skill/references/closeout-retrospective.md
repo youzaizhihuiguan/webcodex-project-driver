@@ -5,14 +5,17 @@
 At a phase/stage closeout:
 
 1. verify the intended objective/phase status;
-2. verify required domain/project evidence exists and belongs to the exact run/candidate;
-3. preserve failed/invalid formal evidence;
-4. update durable run state and authoritative project status;
-5. record accepted/deferred risks separately from strict PASS/FAIL;
-6. surface substantive delegated results/artifacts;
-7. hand off or release owned/borrowed resources according to policy;
-8. close obsolete Sessions/Tasks/Jobs only when doing so cannot destroy needed recovery evidence;
-9. leave an exact next action when more work remains.
+2. reconcile every required Task/Attempt/Job/worker result;
+3. verify the exact integration candidate when parallel work converged;
+4. verify required domain/project evidence exists and belongs to that exact run/candidate;
+5. obtain or reconcile independent audit evidence when the project requires it;
+6. preserve failed/invalid formal evidence;
+7. update durable run state and authoritative project status;
+8. record accepted/deferred risks separately from strict PASS/FAIL;
+9. surface substantive delegated results/artifacts;
+10. hand off or release owned/borrowed resources and Runner placements according to policy;
+11. retire obsolete waits/endpoints/Sessions/Tasks/Jobs only when doing so cannot destroy needed recovery evidence;
+12. leave an exact next action when more work remains.
 
 For Git/worktree cleanup in software projects, use [software-git-adaptation.md](software-git-adaptation.md).
 
@@ -33,6 +36,8 @@ Before destructive cleanup, verify:
 - whether the project requires explicit authorization.
 
 Failure cleanup should preserve recoverability first.
+
+For multi-Agent work, do not clean up worker/integration/audit identities until the final accepted candidate and its provenance can still be reconstructed without chat history.
 
 ## Retrospective
 
