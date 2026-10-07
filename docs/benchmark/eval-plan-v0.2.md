@@ -1,6 +1,8 @@
 # v0.2 evaluation plan
 
-Status: executable plan; production Skill remains unchanged.
+Status: v0.2 is implemented on `review/v0.2-control-plane`; focused Host regressions are recorded in `2026-10-07-host-eval-results.md`; this document remains the evaluation contract used for promotion review.
+
+The original plan predates implementation. Keep the routing and behavior criteria below as the evaluation contract; use the recorded Host evidence plus focused repository/package checks for the current review candidate rather than treating this document as evidence that the Skill is still unchanged.
 
 ## Two separate test layers
 
