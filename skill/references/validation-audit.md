@@ -1,5 +1,17 @@
 # Validation, Integration, Evidence, and Audit
 
+## Contents
+
+- [Ownership boundary](#ownership-boundary)
+- [Verification](#verification)
+- [Worker evidence](#worker-evidence)
+- [Integration gate](#integration-gate)
+- [Independent audit](#independent-audit)
+- [Evidence graph](#evidence-graph)
+- [Failure preservation](#failure-preservation)
+- [Failure classification](#failure-classification)
+- [Evidence versus delivery](#evidence-versus-delivery)
+
 ## Ownership boundary
 
 The Project Driver owns control-plane evidence semantics:

@@ -6,6 +6,13 @@ Persist enough state that a new controller can safely continue substantial WebCo
 
 Do not force one storage mechanism. Durable state may live in WebCodex Goal/Session state, project files, a run directory, a database row, Git metadata, or another project-owned store.
 
+## Contents
+
+- [Minimum recoverable fields](#minimum-recoverable-fields)
+- [Orchestration extensions](#orchestration-extensions)
+- [Attention state](#attention-state)
+- [Sufficiency invariant](#sufficiency-invariant)
+
 ## Minimum recoverable fields
 
 Persist these when they materially affect recovery.

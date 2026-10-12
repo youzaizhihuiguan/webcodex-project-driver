@@ -1,5 +1,23 @@
 # Orchestration
 
+## Contents
+
+- [Default topology](#default-topology)
+- [Supervisor topology](#supervisor-topology)
+- [Workflow Sessions](#workflow-sessions)
+- [Durable Goal](#durable-goal)
+- [Durable Agent](#durable-agent)
+- [Worker contract](#worker-contract)
+- [AgentTask / Attempt](#agenttask--attempt)
+- [Delegated CodingAgent](#delegated-codingagent)
+- [Fan-out](#fan-out)
+- [Fan-in / AgentWait](#fan-in--agentwait)
+- [Integrator](#integrator)
+- [Auditor](#auditor)
+- [Event-driven continuation](#event-driven-continuation)
+- [Capability downgrade](#capability-downgrade)
+- [Closeout](#closeout)
+
 ## Default topology
 
 Use one controller unless separate workers materially improve concurrency, isolation, independent evidence, platform coverage, or recovery.

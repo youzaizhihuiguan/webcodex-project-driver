@@ -1,5 +1,13 @@
 # WebCodex Capability Coverage
 
+## Contents
+
+- [Coverage contract](#coverage-contract)
+- [Capability families](#capability-families)
+- [Exposure is not readiness](#exposure-is-not-readiness)
+- [Downgrade safely](#downgrade-safely)
+- [Full-surface discovery](#full-surface-discovery)
+
 ## Coverage contract
 
 Treat the live WebCodex runtime as an extensible capability surface.
