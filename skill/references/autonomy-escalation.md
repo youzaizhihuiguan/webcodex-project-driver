@@ -18,6 +18,8 @@ Usually continue without asking for confirmation when policy already authorizes 
 - wait for already-started work;
 - use a verified optional capability or safe fallback;
 - checkpoint/handoff recovery state.
+- create/reuse exact Project/task scratch and clean it after safe terminal reconciliation;
+- record and route durable completion/failure/interruption attention events.
 
 ## Failure routing
 
@@ -48,6 +50,10 @@ Do not let individual workers overwrite each other. Resolve in the integration s
 ### Repeated failure
 
 Do not loop indefinitely. Respect project-defined retry/cost/time budgets when present; otherwise stop when continued retries would no longer be evidence-driven.
+
+## Attention routing
+
+Use [attention-routing.md](attention-routing.md) to separate durable event truth from Host/user notification. Continue automatically when the next bounded action remains authorized; request Supervisor reasoning for non-trivial control changes; surface the user only for configured terminal notifications or genuine decision boundaries.
 
 ## Human/project decision boundaries
 

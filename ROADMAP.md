@@ -42,6 +42,21 @@ Goals:
 
 Do not broaden trigger metadata merely because more runtime capabilities are covered.
 
+## v0.3.1 — operational hardening
+
+Status: implementation/review.
+
+Add:
+
+- shared cross-agent scratch policy with Runner-local roots;
+- stable Project/task ownership and lazy scratch creation;
+- interruption-safe scratch retention and terminal promote-or-delete cleanup;
+- Computer/Browser/script/download debris hygiene;
+- durable attention routing for completion, failure, interruption, blockers, and user decisions;
+- focused behavior evals B19-B25.
+
+Keep the v0.3 trigger and control-plane architecture unchanged.
+
 ## v0.4 — live delegated-agent execution validation
 
 Validate the v0.3 orchestration patterns end-to-end when a real CodingAgent provider and wake-capable Host continuation path are configured:

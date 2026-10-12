@@ -15,9 +15,11 @@ After truncation, host interruption, a new window, uncertain tool delivery, or m
 3. if identity is genuinely unknown, discover candidates narrowly and reconcile them before mutation;
 4. inspect unresolved Session assignment/message, Goal, Task/Attempt, Wait/Wake, or delegated-run state relevant to the objective;
 5. inspect known active Jobs/resources and the prior placement before redispatch or migration;
-6. recover the exact integration/audit candidate when parallel work had already converged;
-7. verify the latest evidence and last known state;
-8. continue only the missing authorized delta.
+6. recover owned scratch manifests/paths when temporary files may contain the only resumable state;
+7. recover the exact integration/audit candidate when parallel work had already converged;
+8. reconcile any pending durable attention event or failed Host delivery;
+9. verify the latest evidence and last known state;
+10. continue only the missing authorized delta.
 
 For Git-based software recovery, additionally use [software-git-adaptation.md](software-git-adaptation.md).
 
@@ -32,6 +34,10 @@ If an operation may already have started or committed an effect:
 - if the effect cannot be proven either way, preserve the uncertainty explicitly and choose a safe reconciliation path.
 
 This rule applies to transport timeouts, lost model responses, Browser/Computer actions, Session assignment completion, Task attempts, CodingAgent dispatch/reconciliation, Endpoint/Wake generations, AgentWait, Job handoff, Runner migration, artifact transfer, and other stateful effects.
+
+## Scratch retention during interruption
+
+Do not delete task scratch merely because a model turn/window ended or a Runner disconnected. Treat active, interrupted, blocked, waiting, and outcome-unknown scratch as recovery state until exact ownership is reconciled and a durable replacement or terminal outcome is verified.
 
 ## Ambiguous continuation
 

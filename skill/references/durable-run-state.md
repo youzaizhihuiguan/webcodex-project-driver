@@ -67,6 +67,8 @@ For important resources:
 - persistent/ephemeral;
 - expected release/handoff behavior;
 - cleanup status.
+- scratch root/project/task location when recoverable temporary files exist;
+- scratch lifecycle class and whether cleanup/promotion is pending.
 
 ### Last verified state
 
@@ -159,6 +161,18 @@ Do not recompute placement from scratch after interruption if the original resou
 - integration validation state;
 - independent audit identity/verdict;
 - remediation delta if blocked.
+
+## Attention state
+
+When progress depends on regaining model or human attention, persist:
+
+- exact event/source identity;
+- event class and last verified state;
+- whether automatic continuation is possible;
+- exact next action or smallest user decision;
+- notification/Host-delivery state when known.
+
+Notification delivery is not a substitute for source Task/Job/audit truth.
 
 ## Sufficiency invariant
 

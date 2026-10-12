@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.3.1 - 2026-10-12
+
+### Added
+- Runner-local cross-agent scratch lifecycle rooted at `/Users/youzai/ai/scratch` on macOS and `D:\ai\scratch` on Windows for this installation;
+- stable Project/task scratch ownership with lazy directory creation;
+- promote-or-delete cleanup for screenshots, scripts, downloads, staging, logs, and other recoverable temporary outputs;
+- interruption-safe scratch retention and separate scratch/workspace hygiene;
+- durable attention routing for completion, failure, interruption, Runner/continuation loss, audit blockers, and user decisions;
+- focused behavior evals B19-B25.
+
+### Preserved
+- v0.3 routing metadata and WebCodex-native orchestration model;
+- dynamic live capability discovery rather than a static tool catalog;
+- capability gating for CodingAgent providers and Host continuation.
+
 ## 0.3.0 - 2026-10-07
 
 ### Added

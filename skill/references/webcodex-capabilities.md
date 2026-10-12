@@ -42,6 +42,8 @@ Use durable Agent identity, Conversation, Inbox, Endpoint, delivery, Wake, and c
 
 Agent identity alone grants no Project, filesystem, Task, or execution authority.
 
+Use [attention-routing.md](attention-routing.md) when durable completion/failure/interruption state must regain controller or human attention; delivery/wake remains separate from source truth.
+
 ### Goal
 
 Use durable Goals for substantial multi-step/cross-turn planning and progress checkpointing.
@@ -71,6 +73,8 @@ Duration alone does not justify detached execution.
 Use structured search/read/edit when snapshot/revision fencing, batching, path policy, or deterministic mutation helps.
 
 After outcome uncertainty, re-observe workspace state before another write.
+
+For agent-created temporary-but-recoverable files, apply [scratch-lifecycle.md](scratch-lifecycle.md). Runtime-owned typed-script temporary files remain runtime-owned and should not be copied into scratch without a recovery need.
 
 ### Git / cleanup
 

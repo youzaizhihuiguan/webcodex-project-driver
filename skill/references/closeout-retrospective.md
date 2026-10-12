@@ -14,10 +14,14 @@ At a phase/stage closeout:
 8. record accepted/deferred risks separately from strict PASS/FAIL;
 9. surface substantive delegated results/artifacts;
 10. hand off or release owned/borrowed resources and Runner placements according to policy;
-11. retire obsolete waits/endpoints/Sessions/Tasks/Jobs only when doing so cannot destroy needed recovery evidence;
-12. leave an exact next action when more work remains.
+11. promote required scratch evidence/artifacts, then clean terminal task scratch that no longer carries recovery value;
+12. reconcile pending attention events and surface required completion/failure/blocker status;
+13. retire obsolete waits/endpoints/Sessions/Tasks/Jobs only when doing so cannot destroy needed recovery evidence;
+14. leave an exact next action when more work remains.
 
 For Git/worktree cleanup in software projects, use [software-git-adaptation.md](software-git-adaptation.md).
+
+For cross-agent temporary-file cleanup and promotion, use [scratch-lifecycle.md](scratch-lifecycle.md).
 
 ## Completion versus strict acceptance
 
@@ -36,6 +40,8 @@ Before destructive cleanup, verify:
 - whether the project requires explicit authorization.
 
 Failure cleanup should preserve recoverability first.
+
+Prefer cleanup at the bounded task-scratch directory level after promotion/reconciliation instead of deleting individually guessed temporary files. Keep authoritative workspace hygiene separate from scratch hygiene.
 
 For multi-Agent work, do not clean up worker/integration/audit identities until the final accepted candidate and its provenance can still be reconstructed without chat history.
 

@@ -16,6 +16,8 @@ A stale element/snapshot is not authority for a later document.
 
 For multi-step form/workflow actions, use the runtime's current batching semantics only while the same snapshot/document contract remains valid.
 
+Place Browser downloads or other agent-created recoverable intermediates in the owning task scratch rather than an authoritative source directory, Desktop, Downloads, or arbitrary drive root unless the project explicitly owns that destination.
+
 ## Computer / desktop GUI
 
 Before a control effect, observe the exact application/window/display/accessibility state required for that action.
@@ -23,6 +25,8 @@ Before a control effect, observe the exact application/window/display/accessibil
 After application launch, window activation, major UI transition, or uncertain effect, re-observe before relying on earlier UI state.
 
 Tie GUI verification evidence to the exact build/candidate under test.
+
+Ordinary Computer observation should not persist a screenshot by default. Save a snapshot only when recovery, failure/audit evidence, final GUI acceptance, or an explicit user request justifies persistence. Keep unpromoted snapshots in the owning task scratch; see [scratch-lifecycle.md](scratch-lifecycle.md).
 
 ## GUI QA pattern
 

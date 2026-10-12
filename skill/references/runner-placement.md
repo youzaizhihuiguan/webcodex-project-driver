@@ -27,6 +27,13 @@ When placement materially affects recovery, persist:
 - required capability/platform;
 - relevant load/concurrency observation;
 - fallback Runner/path if defined.
+- Runner-local scratch root/task location when recoverable temporary state matters.
+
+## Runner-local scratch
+
+Scratch is local to the selected Runner. For this installation, macOS uses `/Users/youzai/ai/scratch` and Windows uses `D:\ai\scratch`.
+
+The same logical Project may have separate scratch on both Runners. Never infer that a path on one Runner exists on the other or use scratch as an implicit cross-Runner transfer channel. Promote/transfer verified artifacts explicitly when sharing is required.
 
 ## Cross-platform validation
 

@@ -21,6 +21,8 @@ Treat WebCodex as the durable execution/control plane and the current model turn
 10. **Respect ownership boundaries.** Project-local contracts and domain Skills own domain truth and quality methods; this Skill owns WebCodex control semantics.
 11. **Use topology only when it buys real isolation or concurrency.** Default to one controller. Add workers, integrators, auditors, waits, durable Agents, or multiple Runners only when their separate identity/authority/evidence boundaries materially help.
 12. **Placement is a control decision.** Choose a Runner/surface from current authority, project/data locality, platform/capability requirements, resource availability, and recovery cost; never infer placement from convenience alone.
+13. **Keep recoverable scratch separate from authoritative project state.** Put agent-created temporary-but-recoverable files under the configured Runner-local scratch root, bind them to an exact Project and bounded task/run, and promote-or-delete them at closeout.
+14. **Make attention durable before presentation.** Completion, failure, interruption, or decision events must be reconciled and recoverable before relying on Host wake or user notification.
 
 ## Core controller loop
 
@@ -78,6 +80,8 @@ When recovery matters, persist:
 - Runner/surface placement when relevant;
 - evidence/result/artifact locations;
 - resource ownership;
+- scratch ownership/lifecycle when temporary recoverable files exist;
+- pending attention/notification state when continuation or user awareness depends on it;
 - last verified state;
 - integration/audit state when applicable;
 - exact next allowed action;
@@ -112,6 +116,8 @@ For multi-Runner work, place execution explicitly. For cross-Project work, move 
 - For multi-Runner/fleet placement, read [references/runner-placement.md](references/runner-placement.md).
 - For Agent/Job waits, Endpoint/Wake readiness, and automatic continuation, read [references/event-driven-continuation.md](references/event-driven-continuation.md).
 - For Browser, Computer, SSH, artifacts, and cross-Project operations, read [references/cross-surface-operations.md](references/cross-surface-operations.md).
+- For cross-agent temporary file ownership, Mac/Windows scratch roots, promotion, and cleanup, read [references/scratch-lifecycle.md](references/scratch-lifecycle.md).
+- For completion/failure/interruption attention and notification handoff, read [references/attention-routing.md](references/attention-routing.md).
 - For autonomous remediation, escalation, and human decision boundaries, read [references/autonomy-escalation.md](references/autonomy-escalation.md).
 - For evidence, verification, failure preservation, integration, and independent control-plane review, read [references/validation-audit.md](references/validation-audit.md).
 - For phase closeout, handoff, resources, and retrospective, read [references/closeout-retrospective.md](references/closeout-retrospective.md).

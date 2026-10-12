@@ -43,7 +43,7 @@ This keeps the Skill compatible with a changing WebCodex runtime while still pro
 
 ## High-value orchestration patterns
 
-v0.3 adds:
+v0.3 establishes:
 
 ~~~text
 Supervisor / Controller
@@ -64,6 +64,13 @@ plus:
 - cross-Project artifact/integration pipelines;
 - Runner Skill/Plugin/local-MCP extension;
 - automatic safe remediation and explicit escalation boundaries.
+
+v0.3.1 operational hardening adds:
+
+- cross-agent, Runner-local scratch lifecycle with configured Mac/Windows roots;
+- stable Project/task ownership and lazy scratch creation;
+- Computer/Browser/script/download staging hygiene and promote-or-delete closeout;
+- durable attention routing for completion, failure, interruption, audit blockers, and user decisions.
 
 ## Current runtime caveat
 
@@ -104,6 +111,8 @@ skill/
     runner-placement.md
     event-driven-continuation.md
     cross-surface-operations.md
+    scratch-lifecycle.md
+    attention-routing.md
     autonomy-escalation.md
     validation-audit.md
     closeout-retrospective.md

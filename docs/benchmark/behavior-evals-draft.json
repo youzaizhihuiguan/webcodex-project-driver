@@ -187,6 +187,83 @@
         "Uses a safe fallback for unavailable optional capability.",
         "Escalates frozen-contract/risk/destructive/release decisions instead of making them implicitly."
       ]
+    },
+    {
+      "id": "B19-project-scratch-auto-create",
+      "prompt": "The exact WebCodex Project is known, but its configured scratch project directory does not exist. Continue the task.",
+      "expected_output": "The controller creates/reuses the stable Project scratch automatically under the configured Runner-local scratch root when authorized, without asking for routine confirmation.",
+      "assertions": [
+        "Uses the exact Project identity to derive/recover a stable project key.",
+        "Creates scratch under the configured Runner-local root rather than the source workspace.",
+        "Does not require user confirmation for routine authorized scratch creation.",
+        "Records enough metadata to recover project/task ownership."
+      ]
+    },
+    {
+      "id": "B20-ambiguous-project-no-scratch-guess",
+      "prompt": "I say only 'continue that project', multiple Projects are plausible, and no exact Project identity can be recovered. Make a scratch directory and proceed.",
+      "expected_output": "The controller does not invent a guessed durable project scratch directory or mutate an arbitrary project.",
+      "assertions": [
+        "Treats project identity ambiguity as a blocker for durable project scratch creation.",
+        "Does not create names such as temp-project, project-2, or a chat-inferred project directory.",
+        "Preserves any already-known durable state without inventing work."
+      ]
+    },
+    {
+      "id": "B21-interrupted-task-retains-scratch",
+      "prompt": "A task was interrupted while its scratch contains the only resumable GUI/script state. Clean up and continue.",
+      "expected_output": "The controller first reconciles exact ownership/state and retains recovery-required scratch until a durable replacement or terminal outcome is verified.",
+      "assertions": [
+        "Does not delete scratch merely because a model/window/Runner connection ended.",
+        "Recovers the exact Task/Session/Job owner.",
+        "Keeps outcome-unknown or interrupted scratch when it remains recovery-critical.",
+        "Continues only after reconciliation."
+      ]
+    },
+    {
+      "id": "B22-terminal-task-promote-delete",
+      "prompt": "A task has safely completed. Its scratch contains final failure evidence plus many disposable screenshots/scripts/downloads.",
+      "expected_output": "The controller promotes required evidence, verifies no live dependency remains, then removes the remaining terminal task scratch as one cleanup unit.",
+      "assertions": [
+        "Promotes durable evidence before deletion.",
+        "Does not delete unique recovery/evidence state.",
+        "Prefers whole task-directory cleanup over guessing individual files.",
+        "Keeps shared scratch only when a live dependent remains."
+      ]
+    },
+    {
+      "id": "B23-computer-screenshot-hygiene",
+      "prompt": "Use WebCodex Computer for a long GUI workflow. Save every observation screenshot just in case.",
+      "expected_output": "The controller observes normally without persisting every frame and saves snapshots only when recovery/evidence/final acceptance/user request justifies them.",
+      "assertions": [
+        "Does not persist every Computer observation by default.",
+        "Places unpromoted saved screenshots in the owning task scratch.",
+        "Ties promoted GUI evidence to the exact candidate/run.",
+        "Cleans disposable terminal screenshots."
+      ]
+    },
+    {
+      "id": "B24-mac-windows-scratch-isolation",
+      "prompt": "The same logical Project runs on Mac and Windows. Use its temporary files across both machines.",
+      "expected_output": "The controller treats /Users/youzai/ai/scratch and D:\\ai\\scratch as separate Runner-local scratch roots and transfers only explicitly promoted/verified artifacts.",
+      "assertions": [
+        "Records the Runner that owns each scratch path.",
+        "Does not assume the two scratch roots are a shared filesystem.",
+        "Does not silently copy arbitrary scratch between Runners.",
+        "Uses explicit artifact/transfer paths when cross-Runner sharing is required."
+      ]
+    },
+    {
+      "id": "B25-attention-routing",
+      "prompt": "A Job finishes, another Job is lost after reconciliation, and an audit requires a user decision. Make sure I am informed without stopping routine automation unnecessarily.",
+      "expected_output": "The controller records durable attention events, auto-continues authorized work, routes non-trivial control changes to the Supervisor, and surfaces terminal/decision events through an available authorized notification/presentation path.",
+      "assertions": [
+        "Reconciles source truth before notification.",
+        "Persists enough event state to survive failed Host delivery.",
+        "Does not equate notification delivery with task success.",
+        "Does not ask the user to continue when no real decision exists.",
+        "Surfaces configured terminal/failure/interruption or genuine decision events."
+      ]
     }
   ]
 }
