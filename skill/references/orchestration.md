@@ -18,15 +18,15 @@
 - [Capability downgrade](#capability-downgrade)
 - [Closeout](#closeout)
 
-## Default topology
+## Topology boundary
 
-Use one controller unless separate workers materially improve concurrency, isolation, independent evidence, platform coverage, or recovery.
+The user/project contract or `agent-operating-model` decides whether the task should use one controller, workers, an integrator, or an independent auditor.
 
-Do not create multi-Agent ceremony merely because primitives exist.
+This reference owns the WebCodex mechanics **after** that topology is justified. Do not infer topology from task size or from the mere existence of Agent/Task/Wait primitives.
 
 ## Supervisor topology
 
-For substantial work that genuinely benefits from separation, use:
+When the outer task contract calls for separated WebCodex roles, a supported topology is:
 
 ~~~text
 Supervisor / Controller
@@ -46,7 +46,7 @@ Workers own only their assigned bounded objective and evidence.
 
 The Integrator is optional and is appropriate when multiple worker outputs must converge into one candidate.
 
-The Auditor should be independent and read-only by default. It verifies the candidate/evidence rather than inheriting a worker's self-certification.
+When an independent audit is actually required, keep the Auditor read-only by default. It verifies the exact candidate/evidence rather than inheriting a worker's self-certification.
 
 ## Workflow Sessions
 
@@ -157,7 +157,7 @@ Worker PASS statuses alone are not an integrated PASS.
 
 ## Auditor
 
-The Auditor should independently verify:
+Use an Auditor only when independence is required by the outer contract or a concrete material risk. When used, it should independently verify:
 
 - candidate identity;
 - required evidence provenance;
@@ -185,12 +185,12 @@ If a requested topology cannot execute:
 
 ## Closeout
 
-Before declaring a multi-worker phase complete:
+When the outer contract closes multi-worker work:
 
 - reconcile every required Task/Attempt/Job;
 - pull back substantive results;
 - complete integration if needed;
-- obtain independent audit when required;
-- checkpoint Goal/run state;
+- reconcile independent audit only when required;
+- checkpoint WebCodex Goal/run state when recovery needs it;
 - release/handoff resources deliberately;
-- leave an exact next action or terminal reason.
+- preserve the exact WebCodex continuation state needed by the outer handoff.
