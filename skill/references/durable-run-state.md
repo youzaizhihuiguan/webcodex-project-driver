@@ -1,43 +1,21 @@
 # Durable Run State
 
-## Purpose
+## Scope
 
-Persist enough state that a new controller can safely continue substantial WebCodex work without relying on chat memory.
+The outer user/project contract or `agent-operating-model` decides **whether** durable recovery state is needed and owns generic objective/scope/next-action semantics.
 
-Do not force one storage mechanism. Durable state may live in WebCodex Goal/Session state, project files, a run directory, a database row, Git metadata, or another project-owned store.
+This reference defines the **WebCodex-specific fields** that make such a handoff recoverable without chat memory.
 
-## Contents
+Do not force one storage mechanism. These fields may live in Goal/Session state, project files, a run directory, database state, Git metadata, or another project-owned store.
 
-- [Minimum recoverable fields](#minimum-recoverable-fields)
-- [Orchestration extensions](#orchestration-extensions)
-- [Attention state](#attention-state)
-- [Sufficiency invariant](#sufficiency-invariant)
+## Exact identities
 
-## Minimum recoverable fields
-
-Persist these when they materially affect recovery.
-
-### Objective
-
-- exact current objective;
-- scope/constraints that limit allowed work.
-
-If the objective is missing or ambiguous, record that as a blocker instead of inventing work.
-
-### Phase / status
-
-- current phase;
-- lifecycle state such as planned / active / blocked / waiting / failed / complete / abandoned;
-- phase revision/generation when the project/domain uses one.
-
-### Active identities
-
-Record only relevant exact identities, for example:
+Persist only identities that materially affect recovery, for example:
 
 - Project and Runner;
 - Workflow Session;
-- durable Goal;
-- durable Agent / Endpoint generation;
+- Goal;
+- Agent / Endpoint generation;
 - AgentTask / Attempt;
 - AgentWait / Wake;
 - CodingAgentRun;
@@ -45,152 +23,115 @@ Record only relevant exact identities, for example:
 - Browser/page;
 - Computer surface/window;
 - SSH resource / persistent shell;
-- artifact or domain-run identity.
+- artifact or cross-Project transfer identity.
 
-Do not collapse these into one generic "task id."
+Do not collapse distinct runtime objects into one generic task id.
 
-### Freshness selectors
+## Freshness selectors
 
-Store or reference fences/generations/snapshots/observation tokens/replay selectors only when a later continuation is allowed to reuse them.
+Record or reference fences, generations, snapshots, observation tokens, replay/idempotency selectors, and file revisions only when a later continuation may safely reuse them.
 
-Treat ephemeral selectors as invalid after their owning snapshot/generation changes.
+Treat them as invalid when their owning snapshot/generation changes.
 
-### Evidence and results
+## Last verified platform state
 
-- evidence/result locations;
-- provenance;
-- formal PASS/FAIL/INVALID/UNKNOWN where applicable;
-- immutable failed evidence references;
-- substantive delegated result/artifact locations.
+Persist concise mechanical facts that a later controller can trust, such as:
 
-### Resources
+- exact Job terminal/running state observed;
+- exact Task/Attempt reconciled;
+- current Runner/provider readiness;
+- fresh Browser/Computer observation acquired after a structural change;
+- delegated result body pulled back;
+- artifact transfer hash verified;
+- exact integration candidate identified.
 
-For important resources:
+Do not replace these facts with a worker's summary claim.
 
-- identity;
-- owner;
+## Evidence and results
+
+When material:
+
+- result/artifact location and exact source identity;
+- control-plane evidence provenance;
+- PASS/FAIL/INVALID/UNKNOWN state when the outer validation contract uses it;
+- retained failed evidence identity;
+- integration candidate and included worker results;
+- audit identity/verdict only when audit is actually required.
+
+Domain methods and thresholds remain owned elsewhere.
+
+## Resources and scratch
+
+For important resources, persist:
+
+- resource identity and owner;
 - Runner/location;
-- borrowed/owned;
-- persistent/ephemeral;
-- expected release/handoff behavior;
-- cleanup status.
-- scratch root/project/task location when recoverable temporary files exist;
-- scratch lifecycle class and whether cleanup/promotion is pending.
+- borrowed/owned and persistent/ephemeral state;
+- release/handoff expectation;
+- scratch Project/task path when recoverable temporary files exist;
+- cleanup/promotion state.
 
-### Last verified state
+Scratch is Runner-local and must not silently become authoritative project state.
 
-Write a concise mechanical statement of what is actually known true.
+## Wait / continuation state
 
-Examples:
+When waiting or Host re-entry matters, persist:
 
-- exact Job terminal state observed;
-- exact AgentTask Attempt reconciled terminal;
-- fresh Browser snapshot acquired after navigation;
-- delegated Session result body pulled back;
-- artifact transfer SHA verified;
-- Git HEAD/status verified in a software adaptation.
+- exact AgentWait/Job-wait/Wake identity;
+- source Task/Job identities;
+- any/all semantics when relevant;
+- Agent/Endpoint generation;
+- whether production Host continuation readiness was actually observed;
+- consumed/pending wake state when relevant.
 
-### Exact next action
+Wake delivery does not replace source-state reconciliation.
 
-Prefer one mechanically actionable continuation step.
+## Placement
 
-Good:
-
-- observe exact Job X; do not redispatch;
-- reconcile exact CodingAgentRun R bound to Attempt A;
-- resume Session Y and inspect unresolved assignment Z;
-- acquire a fresh Browser snapshot before the next element action;
-- wait for exact Tasks A/B/C, then integrate candidate K;
-- run the Windows validation leg against candidate C.
-
-Avoid vague handoffs such as "continue testing" or "finish the work."
-
-### Decision blockers
-
-Record only real gates:
-
-- missing objective;
-- user approval;
-- missing authority;
-- missing capability/provider;
-- no suitable Runner/placement;
-- frozen-contract change;
-- risk acceptance;
-- destructive cleanup;
-- protected/default-branch promotion or release;
-- irreversible external action.
-
-## Orchestration extensions
-
-When multi-Agent/multi-Runner work exists, also persist enough to recover:
-
-### Controller
-
-- controller Agent/Session identity when used;
-- Goal identity/revision;
-- current topology revision.
-
-### Task graph
-
-For each required work unit:
-
-- Task identity;
-- assignee;
-- current Attempt identity/state;
-- dependencies;
-- expected result/evidence;
-- integration destination;
-- whether replacement dispatch is forbidden until reconciliation.
-
-### Wait / continuation state
-
-- exact AgentWait or Job wait identity;
-- source identities;
-- mode (any/all) when relevant;
-- Endpoint/controller generation;
-- whether production auto-resume/readiness was actually observed;
-- consumed/pending Wake state when relevant.
-
-### Placement
+When placement matters, persist:
 
 - chosen Runner/surface;
-- placement reason;
-- capability/platform requirement;
-- project/data locality;
-- fallback placement if defined.
+- Project/resource identity on that Runner;
+- hard platform/capability/locality reason;
+- fallback placement if one is already defined.
 
-Do not recompute placement from scratch after interruption if the original resource identity still exists and remains valid.
+Do not recompute placement from convenience after interruption while the original durable identity remains valid.
 
-### Integration / audit
+## Orchestration state
 
-- exact integration candidate identity;
-- worker results included/excluded;
-- integration validation state;
-- independent audit identity/verdict;
-- remediation delta if blocked.
+For active multi-worker WebCodex topology, persist enough to recover:
+
+- controller/Goal/topology revision if used;
+- each required Task and current Attempt;
+- dependencies;
+- assignee/backend;
+- expected result/evidence;
+- integration destination;
+- whether replacement dispatch is forbidden until reconciliation;
+- exact integration candidate after fan-in.
 
 ## Attention state
 
 When progress depends on regaining model or human attention, persist:
 
-- exact event/source identity;
+- source identity;
 - event class and last verified state;
-- whether automatic continuation is possible;
-- exact next action or smallest user decision;
-- notification/Host-delivery state when known.
+- whether platform continuation is possible;
+- delivery/wake state when known.
 
-Notification delivery is not a substitute for source Task/Job/audit truth.
+The outer task contract owns the generic decision about whether the user must be interrupted.
 
 ## Sufficiency invariant
 
-Durable run state is sufficient only if a new controller can determine:
+WebCodex-specific recovery state is sufficient only if a new controller can determine:
 
-1. what objective is authorized;
-2. what is already done;
-3. what is still running, waiting, blocked, or uncertain;
-4. what must not be repeated;
-5. what evidence/results exist;
-6. what resources/Runners are involved;
-7. what topology/dependencies remain;
-8. what exact action is safe next;
-9. what decision, if any, blocks continuation.
+1. which exact runtime objects still matter;
+2. which are running, waiting, terminal, failed, or outcome-unknown;
+3. which effect must not be repeated before reconciliation;
+4. which freshness selectors remain valid;
+5. where results/evidence/resources live;
+6. which Runner/surface owns the state;
+7. which waits/topology dependencies remain;
+8. what exact WebCodex observation/effect is safe next.
+
+Generic objective, project policy, acceptance criteria, and broader next-action authority come from their owning project/instruction layer.
