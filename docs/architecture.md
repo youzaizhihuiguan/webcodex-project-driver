@@ -26,7 +26,7 @@ Examples:
 
 One does not substitute for another.
 
-## Universal controller loop
+## WebCodex control loop
 
 ~~~text
 OBSERVE
@@ -56,13 +56,13 @@ Re-observe enough state to prove the intended transition or preserve explicit un
 
 When recovery matters, durably record objective, phase, identities, topology/dependencies, placement, evidence/results, resources, last verified state, integration/audit state, exact next action, and decision blockers.
 
-## Objective authority
+## Objective and operating-model authority
 
-A durable control plane does not create its own business/domain objective.
+A durable WebCodex control plane does not own generic project objective/scope policy.
 
-If the user/project has not defined the actual next objective, repository contents are not permission to invent implementation tasks, evidence, branches, pushes, experiments, or other external mutations.
+Project-local instructions and, when active, `agent-operating-model` own bounded-objective, no-invented-gates, proportional-rigor, generic recovery/verification, and material-mutation guardrails.
 
-Missing objective is a decision blocker unless an authoritative project contract already defines the next action.
+Project Driver maps the authorized work onto exact WebCodex identities, freshness proofs, resources, placements, waits, and lifecycle state.
 
 ## Capability coverage
 
@@ -76,27 +76,18 @@ This allows new runtime tools to be admitted through live discovery without requ
 
 ## WebCodex-native topology
 
-Default:
+Topology selection belongs to the outer task contract / operating model. Once a topology is justified, WebCodex can represent it as:
 
 ~~~text
-single controller
+controller
+  -> worker(s)
+  -> optional integrator
+  -> optional auditor
 ~~~
 
-When justified:
+A durable Goal may hold correlation/progress state. Durable Agent identity may outlive one window. AgentTask/Attempt may provide worker ownership/fencing. AgentWait may provide fan-in. CodingAgent or another backend performs execution only when current provider readiness and authority exist.
 
-~~~text
-Supervisor / Controller
-        |
-        +-- Worker(s)
-        |
-        +-- optional Integrator
-        |
-        +-- independent Auditor
-~~~
-
-A durable Goal may hold phase/progress. Durable Agent identity may outlive one window. AgentTask/Attempt may provide worker ownership/fencing. AgentWait may provide fan-in. CodingAgent or another backend performs execution only when current provider readiness and authority exist.
-
-Worker completion, integration completion, and audit acceptance are distinct states.
+Worker completion, integration completion, audit acceptance, and user-visible delivery remain distinct states.
 
 ## Event-driven continuation
 
@@ -133,23 +124,27 @@ Examples:
 
 ## Composition
 
-Subject to platform/runtime authority:
+Responsibility is layered rather than duplicated:
 
 ~~~text
-project-local explicit contract
-> domain Skill domain-quality rules
-> Project Driver generic control heuristics
+project/path instructions: project truth and policy
+agent-operating-model: generic cross-cutting guardrails
+domain Skills: domain methods/correctness
+webcodex-project-driver: WebCodex-specific control semantics
+WebCodex runtime: live schemas/capabilities/state
 ~~~
 
-Project Driver still owns WebCodex identity/freshness/recovery/orchestration semantics.
+Actual instruction precedence remains host/platform semantics; this diagram describes ownership only.
 
 ## Software adaptation
 
-Git commit/ref/worktree state is authoritative when the target project uses Git as a source-of-truth substrate.
+When Git is authoritative, Project Driver may map WebCodex Projects onto exact checkout/worktree state.
 
-In that case, software work may adapt the universal loop with exact HEAD/ref/status observation, managed worktree isolation, project-owned validation, bounded commit/checkpoint, review branch push, and Git-aware cleanup.
+Default to an existing suitable checkout. Create a managed worktree only for concrete isolation/concurrency/preservation needs; task size, review, or duration alone are insufficient. Reuse a compatible managed worktree when safe.
 
-These are not universal requirements for non-Git workflows.
+Repository/project policy owns ordinary commit/push/PR/release decisions. Project Driver owns WebCodex worktree identity, ownership, recovery, registry reconciliation, and Git-aware terminal cleanup.
+
+Generated-output amplification is distinct from Git metadata. In this installation, the measured large worktree footprint was dominated by replicated Rust `target/` output.
 
 ## Long-running work
 
@@ -187,6 +182,6 @@ Control-plane completion requires more than "task resolved":
 
 ## Automation boundary
 
-Routine implementation, testing, safe remediation, observation, reconciliation, worker coordination, and evidence persistence may continue automatically inside an authorized frozen contract.
+The outer user/project contract or `agent-operating-model` owns generic continuation and material-decision boundaries.
 
-Architecture/scope changes, material risk acceptance, destructive history/resource operations, protected/default-branch promotion/release, or irreversible external actions remain decision boundaries unless project policy explicitly grants that authority.
+Project Driver supplies the WebCodex facts needed for those decisions: exact identity, freshness, prior-effect reconciliation, provider/Host readiness, Runner/resource ownership, result provenance, and whether a verified platform fallback exists.
