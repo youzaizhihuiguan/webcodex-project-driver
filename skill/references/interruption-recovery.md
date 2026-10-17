@@ -39,13 +39,11 @@ This rule applies to transport timeouts, lost model responses, Browser/Computer 
 
 Do not delete task scratch merely because a model turn/window ended or a Runner disconnected. Treat active, interrupted, blocked, waiting, and outcome-unknown scratch as recovery state until exact ownership is reconciled and a durable replacement or terminal outcome is verified.
 
-## Ambiguous continuation
+## Outer objective boundary
 
-If the user says only "continue" and no exact unfinished objective can be recovered from authoritative durable state:
+The project instructions or `agent-operating-model` own generic objective/scope recovery.
 
-- do not choose work based on repository contents;
-- do not create evidence, branches, pushes, experiments, or write tasks to manufacture progress;
-- report the missing objective/identity as the blocker.
+If the outer objective is missing, Project Driver must not fabricate a WebCodex assignment merely because runtime objects exist. Surface the exact WebCodex state already known and let the owning layer decide what work, if any, is authorized.
 
 ## Result delivery
 
