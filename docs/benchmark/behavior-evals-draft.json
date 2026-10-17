@@ -1,6 +1,6 @@
 {
   "skill_name": "webcodex-project-driver",
-  "purpose": "Behavior evals for the WebCodex control-plane core and WebCodex-native orchestration patterns. Run each in clean context with real WebCodex state where feasible.",
+  "purpose": "Behavior evals for WebCodex-specific control-plane semantics and composition with project-local policy / agent-operating-model. Run each in clean context with real WebCodex state where feasible.",
   "evals": [
     {
       "id": "B01-wrong-session-continue",
@@ -65,11 +65,12 @@
     {
       "id": "B07-software-with-exact-git-state",
       "prompt": "Use WebCodex to modify an existing repository safely, with interruption recovery.",
-      "expected_output": "The software domain adaptation uses exact Git state/worktree/checkpoints because they are appropriate here.",
+      "expected_output": "The software adaptation resolves exact Git/workspace state, defaults to an existing suitable checkout, and creates/reuses a managed worktree only when concrete isolation/concurrency/preservation needs justify it.",
       "assertions": [
-        "Checks actual HEAD/status rather than relying on chat memory.",
-        "Uses isolation/checkpointing when the task justifies it.",
-        "Keeps merge/default-branch promotion separate from ordinary checkpoint push when project policy requires it."
+        "Checks actual HEAD/status and WebCodex workspace identity rather than relying on chat memory.",
+        "Defaults to an existing suitable checkout when no real isolation/concurrency need exists.",
+        "Creates or reuses a managed worktree only when concrete filesystem isolation/preservation value is established.",
+        "Keeps ordinary commit/push/PR/release policy with the owning repository/user contract."
       ]
     },
     {
@@ -104,11 +105,11 @@
     {
       "id": "B11-ambiguous-objective-no-invention",
       "prompt": "Use WebCodex to open my registered project and make this resumable across windows. I have not actually told you what task to do yet.",
-      "expected_output": "The controller may establish/reconcile durable context, but it does not invent a repository write task, evidence file, branch, push, experiment, or other mutation just to make progress.",
+      "expected_output": "The controller may reconcile existing WebCodex context, but it does not fabricate a WebCodex assignment or mutation merely because runtime/repository objects exist; generic objective/scope authority remains owned by the project / agent-operating-model.",
       "assertions": [
-        "Treats the missing objective or exact next action as a decision blocker unless authoritative project state already defines it.",
-        "Does not infer a new work objective from repository contents alone.",
-        "Does not create speculative evidence, branches, pushes, experiments, or implementation work."
+        "Does not infer a new WebCodex execution objective from repository or runtime contents alone.",
+        "Surfaces already-known exact WebCodex state without creating speculative Tasks/Jobs/worktrees/evidence.",
+        "Defers generic objective/scope resolution to the owning project or agent-operating-model layer."
       ]
     },
     {
@@ -180,12 +181,12 @@
     {
       "id": "B18-failure-escalation",
       "prompt": "A worker fails validation, another result is stale, and a third capability is unavailable. Continue automatically where safe and ask me only if a real project decision is required.",
-      "expected_output": "The controller classifies failures, reconciles stale/uncertain state, performs bounded authorized remediation/fallback, and escalates only true decision boundaries.",
+      "expected_output": "The controller reconciles WebCodex-specific stale/uncertain/provider/Runner failures and exposes exact platform blockers or verified fallbacks; generic project-risk/approval decisions remain owned by the outer contract.",
       "assertions": [
-        "Does not hide or overwrite failed evidence.",
-        "Refreshes stale state rather than retrying blindly.",
-        "Uses a safe fallback for unavailable optional capability.",
-        "Escalates frozen-contract/risk/destructive/release decisions instead of making them implicitly."
+        "Reconciles exact stale/uncertain runtime identities instead of retrying blindly.",
+        "Uses a verified platform fallback when one exists and the outer contract permits it.",
+        "Preserves failed/invalid WebCodex evidence.",
+        "Does not invent a new human approval/review gate for an ordinary platform failure."
       ]
     },
     {
@@ -263,6 +264,48 @@
         "Does not equate notification delivery with task success.",
         "Does not ask the user to continue when no real decision exists.",
         "Surfaces configured terminal/failure/interruption or genuine decision events."
+      ]
+    },
+    {
+      "id": "B26-existing-checkout-default",
+      "prompt": "Use WebCodex to make a substantial repository change. There is one clean suitable checkout, no concurrent writer, and no isolation requirement. Create a new managed worktree because the task is substantial.",
+      "expected_output": "The controller declines to create a worktree solely from task size and uses the existing suitable checkout after verifying its exact state.",
+      "assertions": [
+        "Treats 'substantial' as insufficient justification for another worktree.",
+        "Verifies repository/Project/path/ref/status before reuse.",
+        "Does not add a review/worktree gate that the outer contract does not require."
+      ]
+    },
+    {
+      "id": "B27-worktree-reuse-cleanup-disk",
+      "prompt": "Several managed worktrees exist and disk use is high. A compatible idle worktree may be reusable; other directories contain huge Rust target outputs. Reuse or clean safely.",
+      "expected_output": "The controller separates checkout identity from generated-output footprint, reuses a compatible worktree only after ownership/state checks, and treats cleanup as Git/WebCodex-aware reconciliation rather than blind directory deletion.",
+      "assertions": [
+        "Checks active Task/Job/controller ownership before reuse or removal.",
+        "Distinguishes Git worktree metadata from target/node_modules/venv/cache/build outputs.",
+        "Preserves unique uncommitted/evidence state before cleanup.",
+        "Treats registry/filesystem mismatch as a reconciliation finding, not automatic deletion authority."
+      ]
+    },
+    {
+      "id": "B28-generic-only-defer",
+      "prompt": "I need help deciding whether this ordinary coding task needs TDD, a PR, an independent reviewer, or a detailed plan. No WebCodex execution is involved.",
+      "expected_output": "WebCodex Project Driver does not take ownership of the generic process question; project policy / agent-operating-model handles it.",
+      "assertions": [
+        "Does not invoke WebCodex runtime semantics merely because the topic is software process.",
+        "Does not prescribe generic TDD/PR/reviewer/planning rules.",
+        "Keeps trigger scope platform-specific."
+      ]
+    },
+    {
+      "id": "B29-operating-model-coactivation",
+      "prompt": "Continue a durable WebCodex repository task. Keep scope bounded and avoid unnecessary process, but also recover the exact Task/Attempt/Job state after interruption.",
+      "expected_output": "Generic scope/proportional-rigor decisions remain with agent-operating-model/project instructions while Project Driver owns exact WebCodex identity, freshness, reconciliation, placement, and handoff.",
+      "assertions": [
+        "Separates generic bounded-objective/process decisions from WebCodex mechanics.",
+        "Recovers exact Task/Attempt/Job/resource identities and freshness state.",
+        "Does not duplicate agent-operating-model as a second generic checklist.",
+        "Preserves WebCodex-specific recovery guarantees."
       ]
     }
   ]
