@@ -1,58 +1,59 @@
-# Closeout and Retrospective
+# WebCodex Closeout and Retrospective
+
+## Scope
+
+The outer project or `agent-operating-model` decides when a phase/objective needs durable closeout and what project acceptance means.
+
+This reference defines the WebCodex-specific reconciliation and resource work that may be required at such a closeout.
 
 ## Control-plane closeout
 
-At a phase/stage closeout:
+When applicable:
 
-1. verify the intended objective/phase status;
-2. reconcile every required Task/Attempt/Job/worker result;
-3. verify the exact integration candidate when parallel work converged;
-4. verify required domain/project evidence exists and belongs to that exact run/candidate;
-5. obtain or reconcile independent audit evidence when the project requires it;
-6. preserve failed/invalid formal evidence;
-7. update durable run state and authoritative project status;
-8. record accepted/deferred risks separately from strict PASS/FAIL;
-9. surface substantive delegated results/artifacts;
-10. hand off or release owned/borrowed resources and Runner placements according to policy;
-11. promote required scratch evidence/artifacts, then clean terminal task scratch that no longer carries recovery value;
-12. reconcile pending attention events and surface required completion/failure/blocker status;
-13. retire obsolete waits/endpoints/Sessions/Tasks/Jobs only when doing so cannot destroy needed recovery evidence;
-14. leave an exact next action when more work remains.
+1. reconcile every required Task/Attempt/Job/worker result;
+2. verify the exact integration candidate when parallel outputs converged;
+3. verify control-plane evidence belongs to that exact run/candidate;
+4. reconcile independent audit only when the outer contract actually required it;
+5. preserve failed/invalid platform evidence;
+6. pull back required delegated results/artifacts;
+7. hand off or release owned/borrowed resources and Runner placements;
+8. promote required scratch evidence/artifacts, then clean terminal task scratch that no longer carries recovery value;
+9. reconcile pending Wait/Wake/attention state;
+10. retire obsolete Sessions/Tasks/Jobs/endpoints only when needed recovery provenance remains reconstructable;
+11. persist the WebCodex-specific handoff fields required for later recovery.
 
-For Git/worktree cleanup in software projects, use [software-git-adaptation.md](software-git-adaptation.md).
+For Git/worktree cleanup, use [software-git-adaptation.md](software-git-adaptation.md).
 
-For cross-agent temporary-file cleanup and promotion, use [scratch-lifecycle.md](scratch-lifecycle.md).
-
-## Completion versus strict acceptance
-
-Operational/engineering completion and strict domain acceptance may differ.
-
-Do not relabel old FAIL evidence merely because the project chooses to proceed with an explicitly accepted risk.
+For Runner-local scratch, use [scratch-lifecycle.md](scratch-lifecycle.md).
 
 ## Resource cleanup
 
-Before destructive cleanup, verify:
+Before destructive WebCodex resource cleanup, reconcile:
 
-- ownership;
-- persistence expectations;
-- whether another worker/run still depends on the resource;
-- whether unique evidence or uncommitted state remains;
-- whether the project requires explicit authorization.
+- exact owner;
+- persistence expectation;
+- live Task/Job dependencies;
+- unique evidence/uncommitted recovery state;
+- outer authority for cleanup when required.
 
-Failure cleanup should preserve recoverability first.
+Prefer cleanup at the owned task/resource boundary after promotion/reconciliation rather than guessed bulk deletion.
 
-Prefer cleanup at the bounded task-scratch directory level after promotion/reconciliation instead of deleting individually guessed temporary files. Keep authoritative workspace hygiene separate from scratch hygiene.
+For multi-worker work, do not destroy identities/resources while the accepted candidate's provenance still depends on them.
 
-For multi-Agent work, do not clean up worker/integration/audit identities until the final accepted candidate and its provenance can still be reconstructed without chat history.
+## Completion versus delivery
+
+A control-plane object may be terminal while the substantive result has not yet been pulled back or surfaced.
+
+Closeout is incomplete when result delivery/handoff is required but only backend status has been observed.
 
 ## Retrospective
 
-Collect lessons about:
+Promote only stable WebCodex-specific lessons, for example:
 
-- which control rule prevented duplicate/stale work;
-- what state should have been persisted earlier;
-- which capability/runtime assumption was wrong;
-- what caused unnecessary rediscovery;
-- where domain ownership versus control-plane ownership was unclear.
+- an identity/freshness rule that prevented duplicate work;
+- a missing durable platform field that impaired recovery;
+- a provider/Host readiness assumption that proved false;
+- a Runner/resource ownership problem;
+- a control-plane composition ambiguity.
 
-Promote only stable WebCodex/control lessons into this Skill. Keep project-specific/domain methodology in the owning project or domain Skill.
+Keep project-specific policy, generic workflow methodology, and domain lessons in their owning layers.
