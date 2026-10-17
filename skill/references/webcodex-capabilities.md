@@ -54,9 +54,9 @@ Use [attention-routing.md](attention-routing.md) when durable completion/failure
 
 ### Goal
 
-Use durable Goals for substantial multi-step/cross-turn planning and progress checkpointing.
+Use durable Goals when the outer task contract benefits from durable progress/correlation state across turns.
 
-Goal completion remains a controller judgment backed by fresh evidence; the runtime cannot infer natural-language completion automatically.
+Do not create a Goal merely because a task is labeled substantial. Goal completion remains an outer controller judgment backed by fresh evidence; the runtime cannot infer natural-language completion automatically.
 
 ### AgentTask / Attempt / AgentWait
 
@@ -86,7 +86,7 @@ For agent-created temporary-but-recoverable files, apply [scratch-lifecycle.md](
 
 ### Git / cleanup
 
-Use Git review, status, diff, commit, restore/discard, and hygiene only for Git-authoritative software workflows. Apply the software adaptation rather than making Git universal.
+Use WebCodex Git/worktree capabilities only when the owning repository/task contract uses Git. Repository policy owns commit/push/PR/release decisions; [software-git-adaptation.md](software-git-adaptation.md) owns WebCodex checkout/worktree identity, reuse, recovery, and cleanup mechanics.
 
 ### LSP
 
@@ -94,7 +94,7 @@ Use language-server navigation/diagnostics when available. Fall back to bounded 
 
 ### Build / validation
 
-Use structured project/ecosystem validators when their provenance, diagnostics, test-count proof, dependency policy, or same-Job handoff helps. Otherwise use project-native commands with explicit evidence.
+Project/domain instructions choose the validation method and acceptance standard. Use structured WebCodex validators when their provenance, diagnostics, test-count proof, or same-Job handoff helps; otherwise run the project-owned method and preserve exact result provenance.
 
 ### Browser
 
