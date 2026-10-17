@@ -1,96 +1,85 @@
 # Execution Model
 
-## Control-plane state model
+## Scope
 
-Treat these as separate concerns:
+This reference defines **WebCodex control-plane state**, not a generic project workflow. The outer user/project contract or `agent-operating-model` owns objective scope, proportional rigor, generic recovery policy, and material decision boundaries.
 
-- **objective**: what the user/project actually authorizes;
-- **durable identity**: Project, Session, Goal, Task, Job, resource, artifact, or domain-owned run identity;
-- **freshness/generation proof**: fence, attempt generation, snapshot/ref, observation token, replay/idempotency selector, or equivalent;
-- **authority**: permission and project policy for the intended effect;
-- **evidence**: what has actually been observed or verified;
-- **resource ownership**: borrowed/owned, persistent/ephemeral, release/handoff expectations;
-- **presentation**: the current ChatGPT turn/window.
+## WebCodex state model
+
+Keep these concerns separate:
+
+- **durable identity**: Project, Runner, Session, Goal, Agent, Task/Attempt, Job, resource, artifact, surface, or delegated-run identity;
+- **freshness/generation proof**: fence, Attempt/Endpoint generation, snapshot/ref, observation token, replay/idempotency selector, file revision, or equivalent;
+- **effect authority**: current WebCodex/project permission for the platform effect;
+- **control-plane evidence**: what state transition was actually re-observed;
+- **resource ownership**: borrowed/owned, persistent/ephemeral, Runner/locality, release/handoff expectations;
+- **presentation**: the current ChatGPT/Host turn or notification path.
 
 Never silently substitute one for another.
 
 ## Takeover or continuation
 
-When starting or resuming substantial work:
+When resuming WebCodex-backed work:
 
-1. resolve the exact Project or other required WebCodex execution context;
-2. recover exact known Session/Goal/Task/Job/resource identities rather than inferring from recency;
-3. read the last authoritative durable handoff/evidence needed for the next decision;
-4. inspect current freshness/generation proof only when the next action requires it;
-5. discover current capability/provider readiness when an optional path is being considered;
-6. derive the smallest unfinished authorized delta.
+1. resolve the exact Project/Runner context required by the next effect;
+2. recover known Session/Goal/Task/Attempt/Job/resource identities rather than inferring from recency;
+3. read the last durable handoff needed to identify unresolved WebCodex state;
+4. refresh fence/generation/snapshot proof only when the next call requires it;
+5. discover current provider/capability/Host readiness for optional paths;
+6. reconcile only the unresolved platform delta.
 
-If the objective or exact next action is not actually defined, record that as a decision blocker. Do not mine the repository/project for a speculative task.
+If the outer objective or allowed next action is unclear, defer that decision to the applicable project instructions or `agent-operating-model`; do not manufacture a WebCodex task to create motion.
 
-## Universal controller loop
+## WebCodex control loop
 
-```text
+~~~text
 OBSERVE
 -> RECONCILE
 -> ACT
 -> VERIFY
 -> PERSIST / HANDOFF
-```
+~~~
 
 ### Observe
 
-Acquire enough current state to make the next control decision. Prefer precise targeted reads over broad rediscovery.
+Read enough exact runtime state to choose the next platform action.
 
 ### Reconcile
 
-If earlier execution may already exist, determine its state before creating replacement work. Reuse exact identities and replay/idempotency selectors according to the live runtime contract.
+If earlier execution may already exist, inspect that exact identity before replacement dispatch. Reuse idempotency/replay selectors according to the live runtime contract.
 
 ### Act
 
-Execute one bounded authorized effect with current identity, freshness proof, and authority.
+Execute the authorized WebCodex effect with current identity/freshness/authority.
 
 ### Verify
 
-Re-observe the affected state and distinguish intended success, explicit failure, and uncertain outcome.
+Re-observe the affected platform state and preserve explicit uncertainty when the outcome cannot yet be proven.
 
 ### Persist / handoff
 
-When recovery matters, persist current state, evidence, resources, and the exact next action. Use the domain/project's authoritative durable store rather than forcing one storage format.
-
-## Bounded action
-
-A useful bounded action normally has:
-
-- one clear objective;
-- known current predecessor/state;
-- limited effect scope;
-- explicit verification;
-- a natural persistence/handoff boundary.
-
-A project may continue for hours or days. One model turn should usually run only long enough to decide, execute/dispatch one bounded unit, verify or establish durable state, and return/yield.
+When the outer task requires recovery/handoff, persist the WebCodex-specific identity, freshness, resource, placement, evidence, and continuation fields needed to resume safely. See [durable-run-state.md](durable-run-state.md).
 
 ## Resource lifecycle
 
-Track important resources through:
+Track important WebCodex-controlled resources through:
 
-```text
+~~~text
 ACQUIRE / ATTACH
 -> USE
--> VERIFY
+-> RECONCILE / VERIFY
 -> HANDOFF or RELEASE
 -> FAILURE CLEANUP
-```
+~~~
 
-Do not destructively clean up evidence or recovery state merely to make the workspace look finished.
+Do not destroy unique evidence or recovery state during cleanup.
 
-## Autonomous continuation
+## Continuation
 
-Continue without asking "continue?" when all are true:
+Whether work should continue automatically is an outer task/authority decision. This Skill only supplies the platform facts required for that decision:
 
-- the objective is clear;
-- the exact next action is authorized;
-- required capability/authority exists;
-- the prior effect has been verified or reconciled;
-- no true decision blocker has been reached.
-
-Otherwise stop at the blocker instead of inventing work.
+- exact current identity/state;
+- whether the prior effect is reconciled;
+- whether required capability/provider/Host readiness exists;
+- whether resource ownership and freshness permit the next effect;
+- whether a WebCodex-specific blocker remains.
