@@ -1,88 +1,58 @@
-# Autonomy and Escalation
+# WebCodex Failure Routing and Escalation
 
-## Principle
+## Scope
 
-Automate execution mechanics aggressively inside a clear authorized contract. Escalate only when the next action changes objective, authority, risk acceptance, or irreversible external state.
+Generic scope control, approval gates, material-mutation authority, and proportional rigor belong to the user/project contract and, when active, `agent-operating-model`.
 
-## Automatic control actions
+This reference only describes how WebCodex-specific failure states should be reconciled and what platform facts must be surfaced when automatic continuation is impossible.
 
-Usually continue without asking for confirmation when policy already authorizes the class of action:
-
-- observe/reconcile exact existing state;
-- read/search/analyze project material;
-- execute bounded implementation assigned by the current objective;
-- run focused validation;
-- preserve evidence;
-- perform safe remediation that does not change frozen acceptance semantics;
-- coordinate exact Sessions/Tasks/Jobs;
-- wait for already-started work;
-- use a verified optional capability or safe fallback;
-- checkpoint/handoff recovery state.
-- create/reuse exact Project/task scratch and clean it after safe terminal reconciliation;
-- record and route durable completion/failure/interruption attention events.
-
-## Failure routing
+## Platform failure routing
 
 ### Uncertain outcome
 
-Reconcile the same identity before retry.
+Reconcile the same exact Session/Task/Attempt/Job/resource/action identity before retry or replacement dispatch.
 
-### Stale selector/generation/revision
+### Stale selector / generation / snapshot / revision
 
-Acquire fresh state. Do not force the stale effect.
+Acquire fresh state from the owning runtime object. Do not force an effect through stale proof.
 
-### Validation failure
+### Provider or capability unavailable
 
-Preserve FAIL evidence, classify the failure, make a bounded remediation when the fix is inside the authorized design, then create new evidence.
+Verify current Runner/provider/Host readiness. Use an equivalent verified WebCodex path if the outer task contract permits it; otherwise surface the missing capability as a platform blocker.
 
-### Provider/capability unavailable
+### Runner or resource failure
 
-Use a verified fallback that preserves the objective, or stop at a capability blocker if no equivalent path exists.
+Reconcile survival, ownership, and last durable state first. Recover from an exact checkpoint/artifact or make a new placement decision only after duplicate/corruption risk is resolved.
 
-### Runner/resource failure
+### Wait / wake / Host continuation unavailable
 
-Reconcile survival/ownership first, then recover from a durable checkpoint/artifact or make a new placement decision.
+Keep exact source identities and last verified state. Downgrade to later-turn recovery instead of pretending auto-resume exists.
 
 ### Integration conflict
 
-Do not let individual workers overwrite each other. Resolve in the integration stage against an explicit candidate/predecessor.
+Keep worker outputs tied to exact predecessors/candidates. Resolve the conflict at an explicit integration candidate rather than allowing workers to overwrite one another.
 
-### Repeated failure
+### Repeated platform failure
 
-Do not loop indefinitely. Respect project-defined retry/cost/time budgets when present; otherwise stop when continued retries would no longer be evidence-driven.
+Do not loop on the same WebCodex operation without new evidence. Preserve the last verified state and expose the platform limitation/failure to the outer task controller.
 
 ## Attention routing
 
-Use [attention-routing.md](attention-routing.md) to separate durable event truth from Host/user notification. Continue automatically when the next bounded action remains authorized; request Supervisor reasoning for non-trivial control changes; surface the user only for configured terminal notifications or genuine decision boundaries.
+Use [attention-routing.md](attention-routing.md) to keep durable event truth separate from user/Host delivery.
 
-## Human/project decision boundaries
+This Skill does not decide that every failure needs human approval. The outer project/operating model decides whether a real user decision exists; this Skill provides the exact WebCodex state needed for that decision.
 
-Escalate when the next step requires:
+## WebCodex-specific blockers
 
-- defining a missing objective;
-- changing frozen architecture/scope/acceptance semantics;
-- accepting a material unresolved risk;
-- destructive cleanup/history rewrite;
-- changing protected/default-branch or release state when not already authorized;
-- installing/configuring a new privileged provider/runtime integration when that exceeds current authority;
-- irreversible external action;
-- exceeding an explicit cost/time/resource budget.
+Examples include:
 
-## Release boundary
+- exact Project/Runner/Session/Task/Job/resource identity cannot be resolved safely;
+- required freshness/fence/generation cannot be refreshed;
+- prior effect remains outcome-unknown and duplicate execution would be unsafe;
+- required provider/capability/Host path is unavailable with no permitted equivalent;
+- Runner/resource ownership is unresolved;
+- a cross-Project/artifact transfer cannot establish source/destination provenance.
 
-Implementation readiness and release authority are separate.
+When blocked, report the exact affected identity, last verified platform state, why a verified fallback is unavailable, and the smallest platform fact/authority needed to continue.
 
-A controller may prepare a verified release candidate while still stopping before merge/tag/publish/deploy if project policy reserves those effects.
-
-## Reporting blockers
-
-Report:
-
-- exact blocked objective/phase;
-- last verified state;
-- relevant exact identities/evidence;
-- why automatic fallback is insufficient;
-- the smallest decision needed from the user/project owner;
-- what will continue after that decision.
-
-Do not ask "continue?" when no real decision exists.
+Do not manufacture a generic approval or review gate merely because the runtime exposes one.
