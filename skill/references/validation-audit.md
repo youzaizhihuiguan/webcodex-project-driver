@@ -1,146 +1,116 @@
 # Validation, Integration, Evidence, and Audit
 
-## Contents
-
-- [Ownership boundary](#ownership-boundary)
-- [Verification](#verification)
-- [Worker evidence](#worker-evidence)
-- [Integration gate](#integration-gate)
-- [Independent audit](#independent-audit)
-- [Evidence graph](#evidence-graph)
-- [Failure preservation](#failure-preservation)
-- [Failure classification](#failure-classification)
-- [Evidence versus delivery](#evidence-versus-delivery)
-
 ## Ownership boundary
 
-The Project Driver owns control-plane evidence semantics:
+The Project Driver owns **control-plane evidence semantics**:
 
-- which exact run/task/attempt/job/resource/result/candidate the evidence belongs to;
-- whether evidence is current, terminal, failed, invalid, or uncertain;
-- whether a state transition was actually re-observed;
-- preservation of failed/invalid evidence;
-- integration identity and worker-result provenance;
-- independent control-plane review at important gates;
-- result pullback and handoff.
+- which exact Project/Session/Task/Attempt/Job/resource/result/candidate the evidence belongs to;
+- whether the platform state was freshly re-observed;
+- whether the evidence is current, terminal, failed, invalid, or uncertain;
+- worker-result and integration-candidate provenance;
+- stale fence/generation avoidance;
+- result/artifact pullback and handoff;
+- preservation of failed/invalid control-plane evidence.
 
-Domain Skills and project-local contracts own domain validation methods, thresholds, scientific criteria, test strategy, business acceptance, and other domain-quality judgments.
+Project-local instructions, domain Skills, and `agent-operating-model` own domain methods, acceptance thresholds, generic diagnosis/verification discipline, and whether independent review is required.
 
-Do not duplicate those methods here.
+## Platform verification
 
-## Verification
-
-After a stateful action, use the cheapest authoritative observation that can establish what actually happened.
+After a stateful WebCodex effect, use the cheapest authoritative observation that establishes what happened.
 
 Examples:
 
-- exact Task/Attempt terminal state;
+- exact Task/Attempt state;
 - same Job identity reaching a terminal state;
 - fresh Browser/Computer observation after structural change;
 - artifact existence/content identity after transfer;
-- project/domain validation evidence tied to the exact candidate/run.
+- live provider/capability state;
+- project/domain evidence tied to the exact candidate/run.
 
-"Command ran" is not the same as "the intended validation passed."
+"Command dispatched" is not proof that the intended higher-level validation passed.
 
 ## Worker evidence
 
-A worker result should identify:
+When workers are used, retain enough to identify:
 
-- exact assignment/task;
-- candidate/input identity;
+- exact assignment/Task/Attempt;
+- predecessor/input/candidate identity;
 - output/result/artifact identity;
-- evidence produced;
-- unresolved risk/blocker;
-- what the worker did not verify.
+- evidence location;
+- unresolved platform risk/blocker;
+- what was not verified.
 
-A worker claiming "done" is not itself completion evidence.
+A worker saying "done" is not itself completion evidence.
 
-## Integration gate
+## Integration semantics
 
-When multiple worker outputs converge, establish one exact integration candidate before final audit.
+When multiple outputs converge:
 
-The Integrator may mutate only under explicit integration authority.
+1. identify one exact integration candidate;
+2. verify required worker outputs are current and belong to compatible predecessors;
+3. preserve conflict/dependency resolution provenance;
+4. attach integration-level evidence to that exact candidate.
 
-Integration should verify:
+Several individually successful workers do not prove the integrated candidate.
 
-- required worker outputs are present and current;
-- incompatible predecessors/generations are rejected;
-- conflicts/dependencies are resolved;
-- the combined candidate is identified exactly;
-- integration-level validation is attached to that candidate.
-
-Do not treat several individually passing workers as proof that the combined system passes.
+Whether an Integrator is needed is an outer topology decision; this section only defines provenance once integration exists.
 
 ## Independent audit
 
-At major gates, use an independent read-only review/audit context when project/domain risk justifies it.
+Independent control-plane audit is **conditional**. Use it only when the user/project/operating model requires independence or a concrete material risk justifies it.
 
-The reviewer should verify control-plane facts such as:
+When used, a read-only auditor may verify:
 
-- correct candidate/run selection;
+- correct candidate/run identity;
 - evidence provenance;
 - stale-fence/generation avoidance;
 - integration completeness;
-- failure containment;
 - resource lifecycle/handoff;
-- acceptance-state bookkeeping;
-- no fabricated capability/provider/wake path;
-- no hidden retry or replacement dispatch after uncertainty.
+- no fabricated provider/capability/wake path;
+- no hidden replacement dispatch after uncertainty.
 
-Domain correctness remains owned by the appropriate project/domain methodology.
+Domain correctness remains owned elsewhere.
 
-## Evidence graph
+## Evidence traceability
 
-For important work, maintain enough provenance to trace:
+For material work, preserve enough provenance to explain an acceptance claim from exact durable objects:
 
 ~~~text
-objective/requirement
--> Task/assignment
+Task/assignment
 -> Attempt/Session/Job
 -> output/candidate/artifact
--> validation evidence
--> integration candidate
--> audit verdict
+-> control-plane observation/evidence
+-> integration candidate (if any)
+-> audit verdict (if required)
 ~~~
 
-Not every project needs a literal graph database. The invariant is traceability: an acceptance claim should be explainable from exact durable identities and evidence.
+This does not require a graph database or a standalone evidence artifact.
 
 ## Failure preservation
 
-A failed formal run remains failed historical evidence even after a fix.
+A failed formal WebCodex run remains failed historical evidence after remediation.
 
-Do not:
+Do not overwrite the old run, hide an outcome-unknown effect behind replacement success, or relabel stale/invalid evidence as current.
 
-- overwrite old evidence;
-- resume an invalidated formal window as if it were clean;
-- hide a primary failure behind retry success;
-- lower frozen thresholds/denominators merely to pass;
-- cross-mask one failure source/class with another.
+A materially changed candidate/runtime protocol gets new evidence.
 
-A materially changed candidate or protocol gets new evidence.
+## Platform failure classification
 
-## Failure classification
+Generic diagnosis belongs to the outer operating model/domain. For routing inside WebCodex, distinguish at least:
 
-Before remediation, identify the failing layer sufficiently to choose the right owner, for example:
-
-- objective/authority;
-- domain/product correctness;
-- integration conflict;
-- parser/schema/data contract;
-- source/hosting/network/transport;
-- third-party runtime/dependency;
-- test/experiment contamination;
-- Runner/control plane;
 - stale identity/freshness;
-- unavailable provider/capability;
-- acceptance/admission logic.
+- unavailable provider/capability/Host path;
+- Runner/resource failure;
+- transport/hosting/network uncertainty;
+- Task/Attempt/Wait lifecycle error;
+- integration/predecessor mismatch;
+- artifact transfer/provenance mismatch;
+- project/domain failure owned outside WebCodex.
 
-Fix the correct layer rather than treating every failure as an implementation bug.
-
-Use [autonomy-escalation.md](autonomy-escalation.md) to decide whether remediation can continue automatically.
+Use [autonomy-escalation.md](autonomy-escalation.md) for the platform recovery path.
 
 ## Evidence versus delivery
 
-"Task resolved" is not the same as "result delivered to the user."
+Terminal backend state is not the same as user-visible result delivery.
 
-When completion matters, verify both terminal state and substantive result/artifact pullback.
+When delivery matters, verify both the source terminal/result state and the substantive result/artifact pullback.
