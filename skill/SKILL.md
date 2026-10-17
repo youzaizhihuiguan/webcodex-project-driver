@@ -1,32 +1,28 @@
 ---
 name: webcodex-project-driver
-description: Drive substantial stateful work through WebCodex as a durable control plane. Use when ChatGPT must execute, continue, recover, or coordinate work whose real state lives in WebCodex projects, Sessions, Jobs, Goals/Tasks, resources, evidence, or handoffs across multiple steps or model turns. Keep exact identity, freshness/generation proof, authority, reconciliation, verification, and durable next-action state separate. Do not use it as a generic domain-methodology Skill or as permission to invent work when the user's objective is ambiguous.
+description: Operate WebCodex-specific durable control semantics for stateful execution. Use when ChatGPT must address exact WebCodex Projects, Runners, Sessions, Goals, Tasks/Attempts, Jobs, resources, surfaces, artifacts, waits/wakes, freshness/fence/generation state, uncertain WebCodex effects, Runner placement, or live runtime capability readiness. It may co-activate with agent-operating-model for generic scope, proportional-rigor, recovery, verification, and authority guardrails. Do not use it as a generic project, coding, research, or software-development methodology Skill.
 ---
 
 # WebCodex Project Driver
 
-Treat WebCodex as the durable execution/control plane and the current model turn as disposable.
+Treat WebCodex as the durable execution/control plane. Keep this Skill at the platform-semantics layer: project-local instructions own project truth, domain Skills own domain methods, and `agent-operating-model` owns generic scope/process/recovery/authority guardrails when that Skill is active.
 
 ## Core invariants
 
-1. **Identity, freshness, authority are separate.** Before a stateful effect, know the durable object being addressed, the current fence/generation/snapshot/attempt proof when required, and the authority that permits the effect.
-2. **Observe real state before acting.** Use WebCodex and authoritative project artifacts, not chat memory, tab position, or assumed runtime configuration.
-3. **Reconcile uncertain outcomes before retry.** If prior work may already exist, inspect the exact existing Session/Task/Job/resource or replay key before dispatching replacement work.
-4. **Ambiguous objective is not permission to invent work.** Do not infer a new write task, evidence artifact, branch, push, experiment, or external mutation merely from repository/project contents. Preserve state and treat the missing objective/next action as a decision blocker unless an authoritative project contract already defines it.
-5. **Keep execution bounded.** Use short model batches that can finish, verify, persist, or hand off without making one reply carry an entire long-running stage.
-6. **Discover the full runtime capability surface live.** Static Skill text owns stable selection policy and patterns; current manifests/status own tool names, schemas, providers, readiness, and newly added capabilities.
-7. **Persist recoverable state when recovery matters.** Record objective, phase, active work identities, evidence/results, resources, last verified state, exact next action, and decision blockers in an appropriate durable store.
-8. **Preserve evidence.** Failed formal evidence remains failed history. Do not alter thresholds, denominators, retries, or source scope merely to convert FAIL to PASS.
-9. **Pull results back to the user.** Terminal/resolved backend state is not the same as substantive result delivery.
-10. **Respect ownership boundaries.** Project-local contracts and domain Skills own domain truth and quality methods; this Skill owns WebCodex control semantics.
-11. **Use topology only when it buys real isolation or concurrency.** Default to one controller. Add workers, integrators, auditors, waits, durable Agents, or multiple Runners only when their separate identity/authority/evidence boundaries materially help.
-12. **Placement is a control decision.** Choose a Runner/surface from current authority, project/data locality, platform/capability requirements, resource availability, and recovery cost; never infer placement from convenience alone.
-13. **Keep recoverable scratch separate from authoritative project state.** Put agent-created temporary-but-recoverable files under the configured Runner-local scratch root, bind them to an exact Project and bounded task/run, and promote-or-delete them at closeout.
-14. **Make attention durable before presentation.** Completion, failure, interruption, or decision events must be reconciled and recoverable before relying on Host wake or user notification.
+1. **Identity, freshness, and authority are separate.** For a WebCodex effect, distinguish the durable object being addressed from its current fence/generation/snapshot/attempt proof and from the authority that permits the effect.
+2. **Observe live WebCodex state before platform mutation.** Use exact Projects/Runners/Sessions/Tasks/Jobs/resources and current manifests/status rather than chat position, recency, or assumed runtime configuration.
+3. **Reconcile uncertain WebCodex effects before retry.** If a prior Session/Task/Job/resource/action may already exist, inspect that same identity or replay/idempotency key before replacement dispatch.
+4. **Capability exposure is not readiness.** Current manifests/status own tool schemas, provider inventory, Host continuation readiness, and Runner capabilities.
+5. **Keep platform lifecycle states distinct.** Worker completion, integration state, audit state, wake delivery, and user-visible result delivery are different facts.
+6. **Pull substantive results back.** A terminal Job/Task/Session is not the same as delivering its result/artifact to the user or next controller.
+7. **Make Runner placement explicit when it matters.** Bind execution to the Runner/surface that actually satisfies authority, locality, platform, capability, and lifecycle requirements.
+8. **Track WebCodex resource and scratch ownership.** Keep borrowed/owned resources and Runner-local recoverable scratch tied to exact Project/run identities until safely handed off or released.
+9. **Make attention recoverable before presentation.** Reconcile source Task/Job/audit state before relying on Wake, Host re-entry, or notification delivery.
+10. **Respect composition boundaries.** This Skill owns WebCodex control semantics only; do not duplicate repository policy, domain methodology, or generic operating-model rules.
 
-## Core controller loop
+## WebCodex control loop
 
-For substantial work, use:
+For a stateful WebCodex effect, use:
 
 ~~~text
 OBSERVE
@@ -38,106 +34,96 @@ OBSERVE
 
 ### OBSERVE
 
-Resolve only the state needed for the next decision:
+Resolve only the WebCodex state needed for the next platform decision:
 
-- exact Project and relevant durable run identity;
-- exact Session/Goal/Task/Attempt/Job/resource identities already known;
-- freshness/generation/fence/snapshot selectors required by the next operation;
-- authority and current capability/provider/Host readiness;
-- Runner placement and resource ownership when multiple execution locations are possible;
-- last verified evidence and project-owned handoff state.
+- exact Project/Runner and relevant Session/Goal/Task/Attempt/Job/resource identities;
+- freshness/generation/fence/snapshot selectors required by the next call;
+- current provider/capability/Host readiness;
+- Runner/surface placement and resource ownership when relevant;
+- last verified control-plane evidence/handoff.
 
-Do not broadly rediscover the project when a valid checkpoint/handoff already identifies the needed delta.
+A valid checkpoint should narrow observation; do not rediscover the entire project merely because a new model turn began.
 
 ### RECONCILE
 
-Before creating replacement work, determine whether the intended effect already started, completed, failed, or remains unknown.
+Before replacement dispatch, determine whether the exact prior effect started, completed, failed, remains active, or is still unknown.
 
-Uncertain outcome means **observe the same identity first**, not retry blindly.
-
-For parallel work, reconcile each exact Task/Attempt/Job and the integration candidate rather than collapsing worker claims into one synthetic status.
+For parallel work, reconcile each exact Task/Attempt/Job and the integration candidate separately.
 
 ### ACT
 
-Perform one bounded authorized effect using current identity/freshness/authority. Acquire or attach only resources needed for that effect.
+Perform the next authorized WebCodex effect using current identity/freshness/authority. Attach only the platform resources required for that effect.
 
-If the objective itself is missing or ambiguous, do not create speculative work.
-
-Fan out only work that can be assigned with clear ownership, dependencies, result contract, and integration/audit path.
+When workers are already justified by the outer task contract, give each exact ownership, dependencies, output/evidence contract, and integration destination.
 
 ### VERIFY
 
-Re-observe enough state to establish what actually changed. Treat state-changing Browser/Computer operations, fenced assignments, Task attempts, Job handoffs, Endpoint generations, file revisions, and other generation-bound operations as freshness boundaries.
+Re-observe the affected WebCodex state. Treat Browser/Computer navigation, fenced assignments, Task attempts, Job handoffs, Endpoint generations, file revisions, and other generation-bound operations as freshness boundaries.
 
-Worker completion is not integration proof. Integration success is not independent audit proof.
+Do not treat command dispatch, worker claims, wake delivery, or artifact transport as proof of the higher-level result they support.
 
 ### PERSIST / HANDOFF
 
-When recovery matters, persist:
+When recovery/handoff is required by the outer task contract, persist the WebCodex-specific fields needed to resume safely:
 
-- current objective and phase/status;
-- active exact identities and dependency/topology state;
-- Runner/surface placement when relevant;
-- evidence/result/artifact locations;
-- resource ownership;
-- scratch ownership/lifecycle when temporary recoverable files exist;
-- pending attention/notification state when continuation or user awareness depends on it;
-- last verified state;
-- integration/audit state when applicable;
-- exact next allowed action;
-- real decision blockers.
+- exact active identities and dependency/topology state;
+- Runner/surface placement;
+- freshness selectors that remain reusable;
+- evidence/result/artifact locations and provenance;
+- resource/scratch ownership and cleanup state;
+- pending wait/wake/attention state;
+- last verified platform state;
+- exact next WebCodex observation/effect.
 
-Then continue automatically while the objective and authority remain clear, or stop at a true decision boundary.
+The outer project or `agent-operating-model` owns the generic objective, scope, decision gates, and whether durable recovery state is needed.
 
 ## WebCodex-native composition
 
-Use the smallest topology that satisfies the task:
+Topology choice is governed by the actual task contract and generic operating model. Once a topology is justified, this Skill owns its WebCodex mechanics:
 
 ~~~text
 single controller
 or
-supervisor -> workers -> optional integrator -> independent auditor
+controller -> workers -> optional integrator -> optional auditor
 ~~~
 
-Use durable Goal/Agent/AgentTask/Attempt/AgentWait/continuation primitives only when live runtime readiness supports them. API exposure alone is insufficient.
+Use Goal/Agent/AgentTask/Attempt/AgentWait/continuation primitives only when current runtime readiness supports them. API exposure alone is insufficient.
 
-Prefer event-driven waits/continuation over repeated polling when a supported durable wake path exists. If no wake-capable path is ready, persist the exact continuation state and recover it in a later turn.
+Prefer event-driven waits/continuation over repeated polling when a supported durable wake path is ready. If no wake-capable path is ready, preserve exact identities/state for later recovery.
 
-For multi-Runner work, place execution explicitly. For cross-Project work, move artifacts through verified handoff/transfer paths rather than through model text when the runtime provides them.
+For multi-Runner work, place execution explicitly. For cross-Project work, move artifacts through verified runtime handoff/transfer paths rather than model text when available.
 
 ## References
 
-- For the generic control model and bounded execution semantics, read [references/execution-model.md](references/execution-model.md).
-- For cross-domain durable run state, read [references/durable-run-state.md](references/durable-run-state.md).
-- For Project Driver versus domain/project ownership, read [references/composition-boundaries.md](references/composition-boundaries.md).
-- For interruption and uncertain-outcome recovery, read [references/interruption-recovery.md](references/interruption-recovery.md).
-- For long Jobs, async/detached processes, and persistent shells, read [references/long-running-work.md](references/long-running-work.md).
-- For controller/worker/integrator/auditor topologies, AgentTask/Attempt, and fan-out/fan-in, read [references/orchestration.md](references/orchestration.md).
-- For multi-Runner/fleet placement, read [references/runner-placement.md](references/runner-placement.md).
-- For Agent/Job waits, Endpoint/Wake readiness, and automatic continuation, read [references/event-driven-continuation.md](references/event-driven-continuation.md).
+- For WebCodex identity/freshness/resource control semantics, read [references/execution-model.md](references/execution-model.md).
+- For WebCodex-specific recovery fields to add to an outer durable handoff, read [references/durable-run-state.md](references/durable-run-state.md).
+- For ownership with project instructions, domain Skills, and `agent-operating-model`, read [references/composition-boundaries.md](references/composition-boundaries.md).
+- For interruption and uncertain WebCodex outcome recovery, read [references/interruption-recovery.md](references/interruption-recovery.md).
+- For Jobs, async/detached processes, and persistent shells, read [references/long-running-work.md](references/long-running-work.md).
+- For Task/Attempt/Wait and controller/worker/integrator/auditor mechanics, read [references/orchestration.md](references/orchestration.md).
+- For multi-Runner placement, read [references/runner-placement.md](references/runner-placement.md).
+- For Agent/Job waits, Endpoint/Wake readiness, and Host continuation, read [references/event-driven-continuation.md](references/event-driven-continuation.md).
 - For Browser, Computer, SSH, artifacts, and cross-Project operations, read [references/cross-surface-operations.md](references/cross-surface-operations.md).
-- For cross-agent temporary file ownership, Mac/Windows scratch roots, promotion, and cleanup, read [references/scratch-lifecycle.md](references/scratch-lifecycle.md).
-- For completion/failure/interruption attention and notification handoff, read [references/attention-routing.md](references/attention-routing.md).
-- For autonomous remediation, escalation, and human decision boundaries, read [references/autonomy-escalation.md](references/autonomy-escalation.md).
-- For evidence, verification, failure preservation, integration, and independent control-plane review, read [references/validation-audit.md](references/validation-audit.md).
-- For phase closeout, handoff, resources, and retrospective, read [references/closeout-retrospective.md](references/closeout-retrospective.md).
-- For full live capability discovery, extension surfaces, and downgrade behavior, read [references/webcodex-capabilities.md](references/webcodex-capabilities.md).
-- For Git/worktree/commit behavior when Git is an authoritative software-project substrate, read [references/software-git-adaptation.md](references/software-git-adaptation.md).
+- For Runner-local temporary file ownership and cleanup, read [references/scratch-lifecycle.md](references/scratch-lifecycle.md).
+- For durable completion/failure/interruption attention delivery, read [references/attention-routing.md](references/attention-routing.md).
+- For WebCodex-specific failure routing and capability blockers, read [references/autonomy-escalation.md](references/autonomy-escalation.md).
+- For control-plane evidence provenance, integration, and audit semantics, read [references/validation-audit.md](references/validation-audit.md).
+- For WebCodex resource/identity closeout, read [references/closeout-retrospective.md](references/closeout-retrospective.md).
+- For live capability discovery and safe downgrade, read [references/webcodex-capabilities.md](references/webcodex-capabilities.md).
+- For Git mapping and WebCodex-managed worktree selection/reuse/cleanup, read [references/software-git-adaptation.md](references/software-git-adaptation.md).
 
-## Decision boundaries
+## WebCodex-specific blockers
 
-Stop for genuine decisions such as:
+Use the outer user/project/platform contract for generic scope, risk, release, and destructive-action decisions. This Skill adds platform blockers when, for example:
 
-- the objective or next authorized action is materially ambiguous;
-- a frozen project architecture/scope/acceptance contract must change;
-- accepting a material unresolved risk instead of satisfying a required gate;
-- destructive cleanup or history rewrite;
-- protected/default-branch promotion or release when project policy reserves that decision;
-- irreversible external action not already authorized;
-- missing authority or unavailable capability that materially changes the plan.
+- the exact target Project/Runner/Session/Task/Job/resource cannot be identified safely;
+- a required fence/generation/snapshot is stale and cannot be refreshed;
+- a prior WebCodex effect remains outcome-unknown and duplicate execution would be unsafe;
+- a required provider/capability/Host path is unavailable with no equivalent verified fallback;
+- Runner/resource ownership is unresolved and moving/duplicating work could corrupt or duplicate state.
 
-Do not stop for routine observation, bounded authorized execution, supported worker dispatch, continued observation of an already-started Job/Task, evidence persistence, safe remediation inside the frozen contract, or non-destructive recovery mechanics.
+Do not invent additional approval gates merely because a WebCodex primitive exists.
 
 ## Recovery invariant
 
-After interruption or uncertain delivery, recover exact identity and verified evidence first, then continue only the uncompleted delta. Never equate a browser/chat window, recent activity, a stale selector, or a worker's claim with durable task truth.
+After interruption or uncertain delivery, recover exact WebCodex identity and verified platform evidence first, then continue only the unresolved platform delta. Never equate a chat/browser window, recent activity, stale selector, wake delivery, or worker claim with durable execution truth.
