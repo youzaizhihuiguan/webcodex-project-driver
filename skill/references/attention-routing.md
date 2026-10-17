@@ -47,34 +47,29 @@ If delivery fails or no Host carrier is available, the durable event remains pen
 
 ## Routing
 
-Route by the next action, not by severity labels alone.
+This reference routes **delivery and controller attention**, not generic project authority.
 
-### Auto-continue
+The user/project contract or `agent-operating-model` decides whether a genuine user decision exists. Once that is known:
 
-Continue automatically when the objective, authority, evidence, and next bounded action remain clear.
+### Controller continuation
 
-A terminal worker result that simply enables the already-authorized next stage does not require user approval.
+If the outer contract authorizes continuation, a terminal WebCodex event may wake/resume the controller without adding a new approval gate.
 
-### Supervisor attention
+### Supervisor/controller attention
 
-Request controller/Supervisor reasoning when the event changes scheduling, remediation, integration, placement, or other non-trivial control decisions but remains within the authorized project contract.
+Route to controller reasoning when scheduling, WebCodex remediation, integration, placement, or runtime fallback must be recomputed inside the existing authority.
 
 ### Human attention
 
-Surface to the user when:
+Surface to the user when the outer contract requires a decision or terminal notification, or when no verified WebCodex fallback can preserve the authorized work.
 
-- a real decision boundary is reached;
-- an explicit user notification policy asks for terminal completion/failure/interruption status;
-- automatic fallback cannot preserve the objective;
-- continued work would exceed an authorized risk/cost/resource boundary.
-
-Do not ask `continue?` when no real decision exists.
+Do not promote notification delivery itself into a project gate.
 
 ## Completion and interruption
 
 When configured by the user, terminal completion should produce a user-visible attention delivery after the final result/evidence is reconciled.
 
-Interruption/degradation should also surface when it prevents automatic continuation, including:
+Interruption/degradation should be made recoverable and surfaced when the outer contract requires user awareness or when it prevents any verified platform continuation, including:
 
 - lost Job after reconciliation;
 - Runner offline with no safe continuation;
