@@ -1,5 +1,21 @@
 # Changelog
 
+## Unreleased — agent-operating-model split
+
+### Changed
+- narrowed `webcodex-project-driver` to WebCodex-specific identity, freshness, runtime, orchestration, resource, recovery, and evidence semantics;
+- delegated generic bounded-objective, proportional-rigor, generic verification/diagnosis, and material-mutation guardrails to project-local policy / `agent-operating-model`;
+- made independent audit and multi-agent topology conditional rather than default milestones;
+- rewrote managed-worktree policy to default to an existing suitable checkout, create new worktrees only for concrete isolation/concurrency needs, prefer safe reuse, account for generated-output amplification, and use Git/WebCodex-aware terminal cleanup;
+- clarified that repository policy owns ordinary commit/push/PR/release decisions.
+
+### Preserved
+- exact Project/Runner/Session/Goal/Task/Attempt/Job/resource identity;
+- freshness/fence/generation/snapshot discipline;
+- uncertain WebCodex outcome reconciliation;
+- Runner placement, wait/wake/Host readiness, Browser/Computer/SSH/artifact semantics;
+- Runner-local scratch/resource lifecycle and result/evidence provenance.
+
 ## 0.3.1 - 2026-10-12
 
 ### Added
