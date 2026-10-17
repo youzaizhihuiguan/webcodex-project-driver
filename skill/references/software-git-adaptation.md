@@ -1,73 +1,105 @@
 # Software / Git Adaptation
 
-Use this reference only when Git is an authoritative substrate for the target software project. Git/worktree/checkpoint semantics are not universal WebCodex truths.
+Use this reference only when Git is an authoritative substrate and WebCodex must map project work onto checkouts or managed worktrees.
 
-## Baseline
+Generic branch/commit/push/review/release policy belongs to the repository/project and, when active, `agent-operating-model`. This reference owns **WebCodex checkout/worktree identity, selection, reuse, recovery, and cleanup mechanics**.
 
-Before mutation, resolve the relevant human-readable ref to an exact commit and inspect the actual workspace state.
+## Resolve current Git/workspace identity
 
-Do not infer repository truth from chat memory.
+Before a WebCodex-managed checkout/worktree mutation, resolve:
 
-## Managed worktrees
+- exact repository and Project;
+- checkout/worktree path;
+- branch/ref/HEAD when applicable;
+- actual workspace status;
+- current WebCodex owner/Job/Task dependencies;
+- whether another checkout/worktree already satisfies the required isolation.
 
-Prefer a WebCodex-managed worktree for substantial write/review work when:
+Do not infer Git/workspace truth from chat memory.
 
-- another checkout must remain stable;
-- independent audit/review must coexist;
-- failed runtime/evidence state must be preserved;
-- parallel tasks need filesystem isolation.
+## Selection policy
 
-A worktree is another checkout of the same repository, not a separate Git history.
+**Default to an existing suitable checkout.**
 
-## Commit/checkpoint policy
+Create a new WebCodex-managed worktree only when a concrete requirement justifies filesystem isolation, such as:
 
-Create a recovery-worthy checkpoint when a bounded software unit is complete enough to preserve.
+- concurrent mutable branches/tasks that would otherwise conflict;
+- preserving a stable checkout while another mutable candidate is developed;
+- preserving a failed/experimental workspace that must remain inspectable;
+- a genuinely independent audit/validation run whose filesystem isolation is material.
 
-A good checkpoint is:
+The labels **substantial**, **review**, and **long-running** are not sufficient reasons by themselves.
 
-- tied to one objective;
-- exact about its predecessor;
-- validated to the level required by the owning project/domain;
-- reviewed for the intended diff;
-- reversible/explainable.
+## Safe reuse
 
-If a WIP checkpoint is necessary for durability, label its validation state explicitly. Never treat an unvalidated commit as PASS.
+Before creating another managed worktree, inspect existing WebCodex Projects/worktrees for a compatible candidate.
 
-## Push policy
+Reuse an existing one only after verifying:
 
-Push an important review/checkpoint branch when remote recovery materially reduces risk.
+- same repository identity;
+- suitable branch/ref/candidate;
+- workspace state is understood;
+- no conflicting active Task/Job/controller owns it;
+- reuse will not destroy unique failed/experimental evidence;
+- project policy permits that workspace to be reused.
 
-Do not equate:
+Do not silently retarget a dirty or actively owned worktree.
 
-- local commit;
-- branch push;
-- protected/default-branch merge.
+## Build-output amplification
 
-They are separate actions with separate authority.
+Treat Git worktree count and generated-output footprint as separate concerns.
+
+Phase A measurement for this installation showed that the large managed-worktree footprint was dominated by replicated Rust `target/` build output, not Git worktree metadata itself. Therefore:
+
+- do not solve disk pressure by discussing Git metadata alone;
+- do not create a fresh worktree merely to obtain a clean build directory;
+- inspect `target/`, `node_modules/`, virtual environments, caches, build/dist/out trees, and other generated state when capacity matters;
+- use repository/toolchain-defined shared cache or output policies only when the owning project explicitly supports them;
+- never invent a cross-worktree shared build/cache layout that could compromise correctness.
+
+Capacity thresholds are review signals, not deletion authority.
 
 ## Recovery
 
-For interrupted Git work, recover:
+After interruption, recover the exact Project/worktree plus:
 
-1. exact Project/worktree;
-2. exact branch/ref/HEAD;
-3. actual status;
-4. relevant validation/evidence;
-5. known Job/Session state;
-6. only the uncompleted delta.
+- branch/ref/HEAD;
+- actual status;
+- active Task/Job ownership;
+- relevant validation/evidence;
+- only the unresolved workspace delta.
 
-This extends the generic recovery model; it does not replace it.
+If a prior worktree create/remove/retarget operation has uncertain outcome, reconcile the WebCodex/Git state before retrying.
 
-## Cleanup
+## Terminal cleanup
 
-Before removing a worktree or branch:
+Remove a managed worktree only after all of the following are reconciled:
 
-1. inspect status;
-2. verify no unique uncommitted files;
-3. verify important commits have durable refs;
-4. preserve evidence/artifacts;
-5. remove the worktree only when safe;
-6. prune stale metadata if needed;
-7. decide local/remote branch deletion separately.
+1. no active Task/Job/controller still owns or depends on it;
+2. no unique uncommitted files remain;
+3. important commits/candidates have durable refs according to project policy;
+4. required evidence/artifacts have been promoted or preserved;
+5. retained failure/experimental state is no longer required;
+6. the outer project/authority contract permits cleanup.
 
-Never use bulk filesystem deletion as a substitute for Git-aware cleanup.
+Then:
+
+- use Git/WebCodex-aware worktree removal rather than blind filesystem deletion;
+- prune stale Git metadata when appropriate;
+- reconcile WebCodex Project/registry state separately from the filesystem;
+- decide branch/ref deletion separately from worktree removal;
+- verify the expected disk/state change after cleanup.
+
+A filesystem directory that is not represented by a matching WebCodex Project is a **reconciliation finding**, not an automatic deletion target.
+
+## Generic Git policy boundary
+
+This reference does not prescribe:
+
+- when to create ordinary commits;
+- whether to push;
+- whether a PR or reviewer is required;
+- protected/default-branch merge policy;
+- release/tag policy.
+
+Use the owning repository/user/platform contract for those decisions.
