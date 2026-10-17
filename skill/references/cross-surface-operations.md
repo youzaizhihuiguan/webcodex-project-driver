@@ -87,4 +87,4 @@ Each Project keeps independent authority. Goal/Task correlation does not automat
 
 Browser/Computer/remote operations may cross into irreversible external effects.
 
-Treat purchases, submissions, destructive admin changes, publishing, release, or equivalent effects as decision boundaries unless the project/user has explicitly authorized that class of action.
+The applicable user/project/platform contract or `agent-operating-model` owns the generic authority decision. This Skill adds WebCodex-specific requirements: use fresh surface state, reconcile uncertain prior effects before retry, and preserve the exact external action/result identity when the runtime exposes one.
