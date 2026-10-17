@@ -57,6 +57,21 @@ Add:
 
 Keep the v0.3 trigger and control-plane architecture unchanged.
 
+## v0.3.2 — composition split and managed-worktree hardening
+
+Status: implementation/validation.
+
+Goals:
+
+- compose cleanly with the generic `agent-operating-model` Skill;
+- remove or narrow generic project/software methodology now owned elsewhere;
+- preserve all WebCodex-specific identity, freshness, runtime, recovery, resource, and evidence semantics;
+- default managed-worktree selection to an existing suitable checkout;
+- require concrete isolation/concurrency/preservation value before creating another worktree;
+- support safe managed-worktree reuse and Git/WebCodex-aware terminal cleanup;
+- treat build-output amplification separately from Git worktree metadata;
+- validate low-ceremony composition without weakening uncertain-outcome recovery.
+
 ## v0.4 — live delegated-agent execution validation
 
 Validate the v0.3 orchestration patterns end-to-end when a real CodingAgent provider and wake-capable Host continuation path are configured:
