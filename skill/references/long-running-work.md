@@ -26,9 +26,9 @@ When the controller only needs terminal attention, prefer a supported AgentWait/
 
 ## Durable state for long work
 
-For costly or formal long work, persist enough to recover:
+When the outer task contract requires durable recovery, add WebCodex-specific state such as:
 
-- objective and phase;
+- outer objective/phase reference when useful for correlation;
 - exact Task/Attempt/Job/process/shell/resource identity as applicable;
 - execution backend identity when Task ownership and execution are separate;
 - launch/start evidence;
@@ -54,9 +54,6 @@ Prefer:
 
 ## Formal windows
 
-For formal soak/burn-in/acceptance work:
+Project/domain instructions own the validation protocol, admission rules, thresholds, and retry policy.
 
-- follow the project/domain protocol for fresh state and admission;
-- preserve failed or invalid windows as historical evidence;
-- do not silently change cadence, source scope, threshold, denominator, or retry semantics to make a run pass;
-- create a new validation window after a material candidate/protocol change rather than relabeling old evidence.
+Project Driver owns the WebCodex provenance around that protocol: exact run/Job identity, candidate binding, failed/invalid run preservation, and a new run identity after a material candidate/protocol change.
