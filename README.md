@@ -1,6 +1,8 @@
 # webcodex-project-driver
 
-A ChatGPT Skill for using WebCodex as a durable execution/control plane for substantial stateful work across Projects, Sessions, Jobs, Goals/Tasks, Agents, Runners, surfaces, resources, evidence, and handoffs.
+A ChatGPT Skill for WebCodex-specific durable execution/control semantics across Projects, Sessions, Jobs, Goals/Tasks, Agents, Runners, surfaces, resources, evidence, and handoffs.
+
+It is designed to compose below project-local instructions and the generic `agent-operating-model` Skill rather than acting as a general software-development or project-governance workflow.
 
 ## Core model
 
@@ -20,11 +22,11 @@ OBSERVE
 -> PERSIST / HANDOFF
 ~~~
 
-Key rules:
+Key platform rule:
 
-> uncertain outcome -> reconcile the exact prior identity before retry
+> uncertain WebCodex outcome -> reconcile the exact prior identity before retry
 
-> ambiguous objective != permission to invent work
+Generic scope, proportional-rigor, material-mutation, and no-invented-gates rules live in the owning project contract / `agent-operating-model`.
 
 ## WebCodex-native coverage
 
@@ -46,13 +48,13 @@ This keeps the Skill compatible with a changing WebCodex runtime while still pro
 v0.3 establishes:
 
 ~~~text
-Supervisor / Controller
+Controller
         |
-        +-- Worker(s)
+        +-- Worker(s), when justified
         |
         +-- optional Integrator
         |
-        +-- independent Auditor
+        +-- optional Auditor, when independence is required
 ~~~
 
 plus:
@@ -83,17 +85,17 @@ Project Driver owns WebCodex control semantics:
 - exact durable identity;
 - freshness/fencing/generation discipline;
 - runtime/capability/provider discovery;
-- topology and placement;
+- Task/Attempt/Wait/Job and topology mechanics;
+- Runner placement;
 - long-running Job/process lifecycle;
-- interruption recovery;
-- durable run state;
-- resource lifecycle;
-- evidence/result/integration handoff;
-- decision boundaries.
+- interruption recovery of exact WebCodex state;
+- resource/scratch lifecycle;
+- evidence/result/integration provenance and handoff;
+- Browser/Computer/SSH/artifact/cross-Project semantics.
 
-Project-local contracts and domain Skills continue to own domain truth and methodology.
+`agent-operating-model` owns generic scope, proportional-rigor, recovery/verification, mutation-authority, and no-invented-gates guardrails when active. Project-local contracts and domain Skills own project/domain truth and methodology.
 
-Git/worktree/checkpoint behavior remains an explicit software adaptation rather than a universal rule.
+Git policy remains repository-owned. The software adaptation owns only WebCodex checkout/worktree identity, selection, reuse, recovery, and cleanup mechanics.
 
 ## Skill layout
 
@@ -124,7 +126,7 @@ skill/
 
 - Repository source is canonical.
 - skill.zip is a generated release artifact.
-- Non-trivial implementation happens on review branches/worktrees, not directly on main.
+- Non-trivial implementation happens on a review branch, not directly on main; create a managed worktree only when concrete isolation/concurrency needs justify it.
 - Failed formal evidence is preserved.
 - Runtime/provider truth comes from live WebCodex discovery.
 - Broad capability coverage must not become domain-methodology duplication.
