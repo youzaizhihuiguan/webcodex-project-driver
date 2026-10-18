@@ -101,6 +101,25 @@ A fresh reviewer does not imply a fresh worktree. Filesystem isolation is govern
 
 Domain correctness remains owned elsewhere.
 
+## Evidence staging and promotion
+
+Raw validation material is not automatically durable evidence.
+
+Keep temporary logs, screenshots, JSON, copied source, transfer archives, unpacked validation trees, dependency trees, and build output in the owning scratch/resource lease unless the project already declares them durable.
+
+At acceptance/closeout:
+
+1. identify the minimum durable evidence the project/domain contract actually needs;
+2. promote that evidence to the project-owned artifact/evidence location;
+3. record provenance/hash/identity linking it to the exact run/candidate;
+4. leave reproducible intermediates classified as owned ephemeral/regenerable so lifecycle finalization can reclaim them.
+
+Prefer compact, reconstructable evidence such as candidate SHA, Job/Task identity, verdict/test counts, receipt, artifact hash/location, required log excerpts, or necessary screenshots.
+
+A build tree, dependency directory, source-transfer archive, or extracted repository copy is not formal evidence merely because it participated in validation.
+
+If a large binary must become durable evidence and no destination/retention policy exists, surface that storage decision rather than persisting it in an arbitrary workspace.
+
 ## Evidence traceability
 
 For material work, preserve enough provenance to explain an acceptance claim from exact durable objects:
@@ -119,6 +138,8 @@ This does not require a graph database, a standalone evidence bundle, or retenti
 ## Failure preservation
 
 A failed formal WebCodex run remains failed historical evidence after remediation.
+
+Preserve the failed run's required provenance/result, but do not equate failure preservation with retaining every reproducible build/output directory or transport copy.
 
 Do not overwrite the old run, hide an outcome-unknown effect behind replacement success, or relabel stale/invalid evidence as current.
 
