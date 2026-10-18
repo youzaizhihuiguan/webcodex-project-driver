@@ -54,7 +54,7 @@ Project Driver may carry domain evidence/results between WebCodex identities, bu
 - WebCodex effect authority;
 - reconcile-before-replacement for WebCodex effects;
 - Job/process/shell lifecycle;
-- resource and Runner-local scratch ownership/lifecycle;
+- resource admission, placement, ownership/provenance, retention, finalization, and Runner-local scratch lifecycle;
 - Session/Task/Attempt/Wait/Wake mechanics;
 - event-driven continuation readiness;
 - Runner/surface placement;
