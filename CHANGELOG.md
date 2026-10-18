@@ -9,6 +9,15 @@
 - rewrote managed-worktree policy to default to an existing suitable checkout, create new worktrees only for concrete isolation/concurrency needs, prefer safe reuse, account for generated-output amplification, and use Git/WebCodex-aware terminal cleanup;
 - clarified that repository policy owns ordinary commit/push/PR/release decisions.
 
+### Added — resource lifecycle hardening
+- placement admission for WebCodex-created disk-material resources, with configured Mac/Windows scratch as the default ephemeral destination;
+- explicit creation provenance/ownership manifests for managed worktrees, native-validation workspaces, transport bundles, build output, and other owned ephemeral state;
+- worktree consent/reuse rules that prevent fresh/read-only reviewers from implying fresh filesystem copies;
+- independent generated-output retention so keeping a worktree/source does not keep `target`, dependency trees, dist/build output, transport archives, or extracted validation copies;
+- evidence staging/promotion rules that preserve required durable provenance without retaining reproducible intermediates;
+- mandatory terminal finalization with `cleanup_pending` recovery, pre-allocation cleanup reconciliation, and scoped cascading cleanup of temporary Sessions/Projects/resources;
+- conservative protection of unknown/foreign/dirty/unique resources when provenance is insufficient for automatic cleanup.
+
 ### Preserved
 - exact Project/Runner/Session/Goal/Task/Attempt/Job/resource identity;
 - freshness/fence/generation/snapshot discipline;
