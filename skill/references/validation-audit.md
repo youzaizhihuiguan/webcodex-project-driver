@@ -34,17 +34,16 @@ Examples:
 
 Treat WebCodex-created raw evidence as staged material until the owning project/validation contract requires it durably.
 
-Raw/staged examples:
+Raw/staged examples include complete logs, screenshots, benchmark/raw JSON, copied or extracted source trees, transport tar/zip bundles, dependency/build trees, and temporary validation databases/state.
 
-- complete logs;
-- screenshots;
-- benchmark/raw JSON;
-- copied/extracted source trees;
-- transport tar/zip bundles;
-- dependency/build trees;
-- temporary validation databases/state.
+At acceptance/closeout:
 
-Prefer promoting compact durable evidence sufficient to reconstruct the acceptance claim, such as:
+1. identify the minimum durable evidence the project/domain contract actually needs;
+2. promote it to the project-owned artifact/evidence location;
+3. record provenance/hash/identity linking it to the exact run/candidate;
+4. leave reproducible intermediates classified as owned ephemeral/regenerable so resource finalization can reclaim them.
+
+Prefer compact, reconstructable evidence such as:
 
 - exact candidate/ref/hash;
 - exact Task/Attempt/Job identity;
@@ -100,25 +99,6 @@ When used, a read-only auditor may verify:
 A fresh reviewer does not imply a fresh worktree. Filesystem isolation is governed by [software-git-adaptation.md](software-git-adaptation.md).
 
 Domain correctness remains owned elsewhere.
-
-## Evidence staging and promotion
-
-Raw validation material is not automatically durable evidence.
-
-Keep temporary logs, screenshots, JSON, copied source, transfer archives, unpacked validation trees, dependency trees, and build output in the owning scratch/resource lease unless the project already declares them durable.
-
-At acceptance/closeout:
-
-1. identify the minimum durable evidence the project/domain contract actually needs;
-2. promote that evidence to the project-owned artifact/evidence location;
-3. record provenance/hash/identity linking it to the exact run/candidate;
-4. leave reproducible intermediates classified as owned ephemeral/regenerable so lifecycle finalization can reclaim them.
-
-Prefer compact, reconstructable evidence such as candidate SHA, Job/Task identity, verdict/test counts, receipt, artifact hash/location, required log excerpts, or necessary screenshots.
-
-A build tree, dependency directory, source-transfer archive, or extracted repository copy is not formal evidence merely because it participated in validation.
-
-If a large binary must become durable evidence and no destination/retention policy exists, surface that storage decision rather than persisting it in an arbitrary workspace.
 
 ## Evidence traceability
 
