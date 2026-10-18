@@ -12,7 +12,7 @@ Keep these concerns separate:
 - **freshness/generation proof**: fence, Attempt/Endpoint generation, snapshot/ref, observation token, replay/idempotency selector, file revision, or equivalent;
 - **effect authority**: current WebCodex/project permission for the platform effect;
 - **control-plane evidence**: what state transition was actually re-observed;
-- **resource ownership**: borrowed/owned, persistent/ephemeral, Runner/locality, release/handoff expectations;
+- **resource ownership**: borrowed/owned, persistent/ephemeral, Runner/locality, placement authority, retention class, provenance, finalizers, and release/handoff expectations;
 - **presentation**: the current ChatGPT/Host turn or notification path.
 
 Never silently substitute one for another.
@@ -62,17 +62,23 @@ When the outer task requires recovery/handoff, persist the WebCodex-specific ide
 
 ## Resource lifecycle
 
-Track important WebCodex-controlled resources through:
+For WebCodex-created disk-material or external resources, use explicit ownership and end-of-life rather than later path guessing:
 
 ~~~text
-ACQUIRE / ATTACH
+ADMIT
+-> ALLOCATE / ATTACH + REGISTER OWNERSHIP
 -> USE
--> RECONCILE / VERIFY
--> HANDOFF or RELEASE
--> FAILURE CLEANUP
+-> PROMOTE durable results
+-> FINALIZE
+-> RECLAIM
+-> VERIFY CLOSED
 ~~~
 
-Do not destroy unique evidence or recovery state during cleanup.
+`ADMIT` resolves owner, placement, retention class, cleanup condition, and applicable authority before allocation.
+
+A substantive Task/Job/Session may be terminal while owned resources remain `cleanup_pending`. If finalization is blocked, preserve the exact resource/provenance and unresolved finalizer; later recovery continues that cleanup delta rather than rediscovering or broadly deleting resources.
+
+Do not destroy unique evidence or recovery state during cleanup. Unknown/foreign resources are protected until ownership/authority is resolved.
 
 ## Continuation
 
