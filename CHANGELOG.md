@@ -1,3 +1,20 @@
+## Unreleased — resource lifecycle hardening
+
+### Changed
+- added resource admission before WebCodex-created disk-material allocation: exact owner, placement authority, retention class, provenance, cleanup condition, and finalizers;
+- made configured Runner scratch the default home for non-Git validation copies, transfer packages, extracted source, raw evidence, and other WebCodex-created ephemeral state;
+- hardened managed-worktree policy so fresh/read-only review does not imply fresh filesystem state, new worktrees require real isolation value plus applicable consent, and cleanup consumes creation provenance rather than directory-name guesses;
+- separated generated-output lifecycle from source/worktree retention and explicitly treats build/dependency/dist/transport state as independently reclaimable;
+- added evidence staging/promotion semantics so raw build/transport trees are not retained merely because they participated in validation;
+- added scoped cascading finalization across temporary Project/Session/workspace/build/transport resources;
+- added recoverable `cleanup_pending` semantics and pre-allocation reconciliation for interrupted/partial cleanup;
+- protected unknown/foreign/dirty/unique state from broad automatic cleanup.
+
+### Real-usage basis
+- macOS: one authoritative LlamaLab worktree retained roughly 34 GB of Rust target output and twelve redundant clean review worktrees accumulated;
+- Windows: non-Git validation workspaces were placed under `D:\ai\llama\启动器` instead of configured scratch and accumulated roughly 59 GB;
+- terminal M3/G3 work left transport archives, scratch material, historical Sessions, and temporary Projects unreconciled until a manual lifecycle audit.
+
 # Changelog
 
 ## Unreleased — agent-operating-model split
