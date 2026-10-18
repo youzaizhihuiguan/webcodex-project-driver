@@ -74,6 +74,17 @@ v0.3.1 operational hardening adds:
 - Computer/Browser/script/download staging hygiene and promote-or-delete closeout;
 - durable attention routing for completion, failure, interruption, audit blockers, and user decisions.
 
+v0.3.3 resource lifecycle hardening adds:
+
+- admission-before-allocation for disk-material WebCodex resources;
+- configured scratch as the default home for non-Git validation copies, transfer staging, raw evidence, and task-scoped generated output;
+- exact creation provenance/ownership for worktrees and other ephemeral resources;
+- read-only/fresh reviewer reuse instead of automatic fresh worktrees;
+- independent generated-output cleanup even when a source checkout/worktree remains;
+- evidence staging -> durable promotion -> ephemeral reclamation;
+- terminal finalization with `cleanup_pending` recovery and pre-allocation reconciliation of prior owned leftovers;
+- conservative protection of foreign/unknown resources.
+
 ## Current runtime caveat
 
 The control model supports delegated Agent execution, but actual CodingAgent dispatch is capability-gated. If the active Runner has no configured provider, the controller must use Session/Job/controller execution rather than pretend a delegated worker ran.
