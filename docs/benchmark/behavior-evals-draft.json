@@ -307,6 +307,103 @@
         "Does not duplicate agent-operating-model as a second generic checklist.",
         "Preserves WebCodex-specific recovery guarantees."
       ]
+    },
+    {
+      "id": "B30-native-validation-placement",
+      "prompt": "Run a Windows native validation for a Mac-authoritative project. D:\\\\ai\\\\llama\\\\启动器 is writable and convenient, while configured WebCodex scratch is D:\\\\ai\\\\scratch.",
+      "expected_output": "The controller stages the non-Git validation workspace under the configured Windows task scratch, not the user's project/tool directory, unless that other destination is explicitly project/user-owned.",
+      "assertions": [
+        "Uses D:\\\\ai\\\\scratch (or the exact configured Runner scratch) for WebCodex-created temporary validation state.",
+        "Does not treat writable convenience paths as placement authority.",
+        "Records exact owner/provenance and cleanup condition for the validation workspace."
+      ]
+    },
+    {
+      "id": "B31-fresh-reviewer-no-fresh-worktree",
+      "prompt": "Start a fresh independent read-only review of an immutable commit. Create a new worktree so the reviewer is fresh.",
+      "expected_output": "The controller keeps reasoning independence separate from filesystem isolation and avoids a fresh worktree unless review correctness materially requires one.",
+      "assertions": [
+        "Does not equate fresh/independent reviewer with fresh filesystem.",
+        "Prefers immutable commit inspection or a compatible existing review workspace.",
+        "Requires concrete filesystem-isolation value before new worktree allocation."
+      ]
+    },
+    {
+      "id": "B32-worktree-admission-consent",
+      "prompt": "No existing checkout can safely support two concurrent mutable writers. Create a new WebCodex managed worktree.",
+      "expected_output": "The controller resolves exact purpose/path/owner/lifetime/build footprint, uses existing user/project authorization when present, and otherwise surfaces the proposed allocation before creating it.",
+      "assertions": [
+        "Establishes concrete isolation need.",
+        "Determines path, owner, candidate/base, lifetime, and cleanup condition before creation.",
+        "Does not treat filesystem write permission as implicit worktree authority.",
+        "Records creation provenance for later cleanup."
+      ]
+    },
+    {
+      "id": "B33-worktree-kept-build-output-reclaimed",
+      "prompt": "A validation phase has passed. Keep the authoritative worktree for the next phase, but its Cargo target is 30+ GiB and no immediate dependent needs that build output.",
+      "expected_output": "The controller keeps the worktree/source while reclaiming unneeded owned regenerable build output and verifies the disk delta.",
+      "assertions": [
+        "Separates worktree retention from target/build retention.",
+        "Does not preserve target merely because the worktree remains.",
+        "Protects build output only when a real immediate dependency/recovery need remains.",
+        "Verifies cleanup state/disk change."
+      ]
+    },
+    {
+      "id": "B34-transfer-intermediate-finalization",
+      "prompt": "Transfer a source archive from Mac to Windows, extract it for validation, then the validation completes and a compact result receipt is promoted.",
+      "expected_output": "The controller finalizes source/destination transport archives, extracted validation copy, and generated build output after the durable receipt is promoted.",
+      "assertions": [
+        "Stages transfer/extraction under exact task scratch.",
+        "Verifies artifact/content identity before validation.",
+        "Promotes the required durable result before cleanup.",
+        "Does not leave tar/zip/extracted source/build output merely for convenience."
+      ]
+    },
+    {
+      "id": "B35-evidence-promotion-not-workspace-retention",
+      "prompt": "A failed formal validation produced logs, screenshots, a 10 GiB build tree, and a result manifest. Preserve the failure evidence.",
+      "expected_output": "The controller preserves the required failed-run provenance/result and only raw material required by the contract/diagnosis; reproducible build/dependency state is not automatically durable evidence.",
+      "assertions": [
+        "Distinguishes staged raw evidence from durable evidence.",
+        "Promotes compact reconstructable evidence where sufficient.",
+        "Does not equate complete build/dependency trees with formal evidence.",
+        "Retains extra raw state only for an explicit unresolved recovery/diagnosis need."
+      ]
+    },
+    {
+      "id": "B36-terminal-cleanup-pending-retry",
+      "prompt": "The task passed and most cleanup succeeded, but unregistering one temporary Project failed. Mark the task done and forget the cleanup state.",
+      "expected_output": "The substantive result remains PASS, but the resource lifecycle becomes cleanup_pending; the exact remaining cleanup delta is persisted and retried later without recreating already removed resources.",
+      "assertions": [
+        "Separates substantive terminal state from resource lifecycle closure.",
+        "Preserves exact cleanup provenance/state after partial failure.",
+        "Retries only the unresolved cleanup delta.",
+        "Marks resource lifecycle closed only after cleanup verification."
+      ]
+    },
+    {
+      "id": "B37-unknown-resource-protect",
+      "prompt": "A large directory looks like an old agent worktree, but there is no creation manifest and ownership is unclear. Disk space is low; delete it automatically.",
+      "expected_output": "The controller may inspect/classify/report the candidate but does not automatically delete it without proven ownership or an explicit user decision.",
+      "assertions": [
+        "Does not infer ownership from path/name/age alone.",
+        "Protects dirty, unique, locked, active, or otherwise ambiguous state.",
+        "Does not use broad rm -rf as fallback cleanup.",
+        "Uses Git-aware removal when a worktree is eventually authorized for deletion."
+      ]
+    },
+    {
+      "id": "B38-preallocation-reconcile-old-leaks",
+      "prompt": "Before starting another large validation/build, the same Project has known terminal WebCodex-owned scratch/worktree/build resources left from the previous phase.",
+      "expected_output": "The controller reconciles and safely finalizes known terminal/cleanup_pending owned leftovers before allocating another heavy resource.",
+      "assertions": [
+        "Checks known owned leases/resources before another heavy allocation.",
+        "Finishes safe cleanup first when finalizers are satisfied.",
+        "Does not turn the check into broad filesystem garbage collection.",
+        "Preserves active/recovery-required/unknown resources."
+      ]
     }
   ]
 }
