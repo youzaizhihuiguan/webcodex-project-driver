@@ -72,6 +72,24 @@ Goals:
 - treat build-output amplification separately from Git worktree metadata;
 - validate low-ceremony composition without weakening uncertain-outcome recovery.
 
+## v0.3.3 — resource lifecycle hardening
+
+Status: implementation/validation.
+
+Goals:
+
+- admit disk-material WebCodex resources with exact owner, placement, retention class, cleanup condition, and applicable authority before allocation;
+- require configured Runner scratch for WebCodex-created non-Git validation workspaces, transfer staging, copied/extracted source, and similar temporary state unless the project/user owns another destination;
+- record recoverable provenance for managed worktrees and other owned ephemeral resources rather than inferring ownership from paths later;
+- treat fresh/read-only review as reasoning independence, not automatic filesystem isolation;
+- separate worktree/source retention from build/dependency/cache/transport retention;
+- stage raw evidence in scratch and promote only required durable results;
+- make owned-resource finalization part of terminal lifecycle, with explicit `cleanup_pending` recovery when finalizers cannot complete;
+- reconcile known terminal owned leftovers before another heavy allocation;
+- preserve unknown/foreign/dirty/unique state by default and forbid broad-discovery deletion as a substitute for provenance.
+
+Validate against the real LlamaLab failure modes that produced replicated review worktrees, oversized Cargo output, non-Git Windows validation copies outside scratch, stale Sessions/Projects, and unfinalized transfer/evidence debris.
+
 ## v0.4 — live delegated-agent execution validation
 
 Validate the v0.3 orchestration patterns end-to-end when a real CodingAgent provider and wake-capable Host continuation path are configured:
