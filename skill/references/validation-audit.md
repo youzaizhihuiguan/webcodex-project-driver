@@ -10,6 +10,7 @@ The Project Driver owns **control-plane evidence semantics**:
 - worker-result and integration-candidate provenance;
 - stale fence/generation avoidance;
 - result/artifact pullback and handoff;
+- staging/promotion/retention of WebCodex-created evidence material;
 - preservation of failed/invalid control-plane evidence.
 
 Project-local instructions, domain Skills, and `agent-operating-model` own domain methods, acceptance thresholds, generic diagnosis/verification discipline, and whether independent review is required.
@@ -28,6 +29,33 @@ Examples:
 - project/domain evidence tied to the exact candidate/run.
 
 "Command dispatched" is not proof that the intended higher-level validation passed.
+
+## Evidence staging and promotion
+
+Treat WebCodex-created raw evidence as staged material until the owning project/validation contract requires it durably.
+
+Raw/staged examples:
+
+- complete logs;
+- screenshots;
+- benchmark/raw JSON;
+- copied/extracted source trees;
+- transport tar/zip bundles;
+- dependency/build trees;
+- temporary validation databases/state.
+
+Prefer promoting compact durable evidence sufficient to reconstruct the acceptance claim, such as:
+
+- exact candidate/ref/hash;
+- exact Task/Attempt/Job identity;
+- PASS/FAIL/INVALID state and test counts;
+- required receipt/log excerpt;
+- artifact hash/location;
+- necessary screenshots.
+
+Do not retain a complete build tree, dependency tree, transport archive, or extracted source copy merely because it participated in validation.
+
+If a large binary/result must become durable and the project has no declared artifact location/retention policy, surface the proposed durable destination before persisting it.
 
 ## Worker evidence
 
@@ -69,6 +97,8 @@ When used, a read-only auditor may verify:
 - no fabricated provider/capability/wake path;
 - no hidden replacement dispatch after uncertainty.
 
+A fresh reviewer does not imply a fresh worktree. Filesystem isolation is governed by [software-git-adaptation.md](software-git-adaptation.md).
+
 Domain correctness remains owned elsewhere.
 
 ## Evidence traceability
@@ -84,7 +114,7 @@ Task/assignment
 -> audit verdict (if required)
 ~~~
 
-This does not require a graph database or a standalone evidence artifact.
+This does not require a graph database, a standalone evidence bundle, or retention of reproducible intermediates.
 
 ## Failure preservation
 
@@ -93,6 +123,8 @@ A failed formal WebCodex run remains failed historical evidence after remediatio
 Do not overwrite the old run, hide an outcome-unknown effect behind replacement success, or relabel stale/invalid evidence as current.
 
 A materially changed candidate/runtime protocol gets new evidence.
+
+Failure preservation applies to the required durable failed-run provenance/result. Preserve raw workspace/build state only when the project contract or unresolved diagnosis/recovery actually needs it; otherwise promote the required evidence and finalize the ephemeral resource.
 
 ## Platform failure classification
 
@@ -113,4 +145,4 @@ Use [autonomy-escalation.md](autonomy-escalation.md) for the platform recovery p
 
 Terminal backend state is not the same as user-visible result delivery.
 
-When delivery matters, verify both the source terminal/result state and the substantive result/artifact pullback.
+When delivery matters, verify both the source terminal/result state and the substantive result/artifact pullback. After required durable evidence is promoted, release unneeded staged evidence through the owning resource lifecycle rather than leaving it in project/source directories.
