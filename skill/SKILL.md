@@ -16,9 +16,11 @@ Treat WebCodex as the durable execution/control plane. Keep this Skill at the pl
 5. **Keep platform lifecycle states distinct.** Worker completion, integration state, audit state, wake delivery, and user-visible result delivery are different facts.
 6. **Pull substantive results back.** A terminal Job/Task/Session is not the same as delivering its result/artifact to the user or next controller.
 7. **Make Runner placement explicit when it matters.** Bind execution to the Runner/surface that actually satisfies authority, locality, platform, capability, and lifecycle requirements.
-8. **Track WebCodex resource and scratch ownership.** Keep borrowed/owned resources and Runner-local recoverable scratch tied to exact Project/run identities until safely handed off or released.
-9. **Make attention recoverable before presentation.** Reconcile source Task/Job/audit state before relying on Wake, Host re-entry, or notification delivery.
-10. **Respect composition boundaries.** This Skill owns WebCodex control semantics only; do not duplicate repository policy, domain methodology, or generic operating-model rules.
+8. **Admit material resources before allocation.** Before WebCodex creates a managed worktree, non-Git validation workspace, durable scratch tree, transport archive, extracted source copy, or other disk-material resource, resolve its exact owner, approved placement, retention class, cleanup condition, and applicable user/project authority. WebCodex-created ephemeral state belongs in configured Runner scratch unless the project or user explicitly owns another destination.
+9. **Separate durable results from regenerable state.** Retaining source, a worktree, a candidate, or formal evidence does not imply retaining build outputs, dependency trees, caches, transport archives, extracted validation copies, or other reproducible intermediates.
+10. **Finalization is part of the resource lifecycle.** A Task/Job/Session can be substantively terminal while WebCodex-owned resources remain `cleanup_pending`. Promote required durable results, reconcile finalizers, reclaim owned ephemeral resources, close obsolete control-plane objects, and verify the cleanup before treating their resource lifecycle as closed. Before another heavy allocation for the same Project, reconcile earlier terminal owned leftovers first.
+11. **Make attention recoverable before presentation.** Reconcile source Task/Job/audit state before relying on Wake, Host re-entry, or notification delivery.
+12. **Respect composition boundaries.** This Skill owns WebCodex control semantics only; do not duplicate repository policy, domain methodology, or generic operating-model rules.
 
 ## WebCodex control loop
 
@@ -39,7 +41,7 @@ Resolve only the WebCodex state needed for the next platform decision:
 - exact Project/Runner and relevant Session/Goal/Task/Attempt/Job/resource identities;
 - freshness/generation/fence/snapshot selectors required by the next call;
 - current provider/capability/Host readiness;
-- Runner/surface placement and resource ownership when relevant;
+- Runner/surface placement, resource ownership/provenance, retention class, and pending cleanup when relevant;
 - last verified control-plane evidence/handoff.
 
 A valid checkpoint should narrow observation; do not rediscover the entire project merely because a new model turn began.
@@ -52,7 +54,7 @@ For parallel work, reconcile each exact Task/Attempt/Job and the integration can
 
 ### ACT
 
-Perform the next authorized WebCodex effect using current identity/freshness/authority. Attach only the platform resources required for that effect.
+Perform the next authorized WebCodex effect using current identity/freshness/authority. Attach only the platform resources required for that effect. Do not create disk-material resources at arbitrary convenient paths when an approved scratch or project-owned destination exists.
 
 When workers are already justified by the outer task contract, give each exact ownership, dependencies, output/evidence contract, and integration destination.
 
@@ -70,7 +72,7 @@ When recovery/handoff is required by the outer task contract, persist the WebCod
 - Runner/surface placement;
 - freshness selectors that remain reusable;
 - evidence/result/artifact locations and provenance;
-- resource/scratch ownership and cleanup state;
+- resource/scratch ownership, placement, retention class, provenance, finalizers, and cleanup state;
 - pending wait/wake/attention state;
 - last verified platform state;
 - exact next WebCodex observation/effect.
