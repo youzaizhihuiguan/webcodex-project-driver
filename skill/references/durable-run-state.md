@@ -64,14 +64,17 @@ Domain methods and thresholds remain owned elsewhere.
 
 For important resources, persist:
 
-- resource identity and owner;
-- Runner/location;
-- borrowed/owned and persistent/ephemeral state;
+- resource identity/kind and exact owner;
+- Runner and exact path/location;
+- borrowed/owned provenance, including whether WebCodex created it;
+- retention class and placement authority;
+- source/candidate/ref/hash when relevant;
 - release/handoff expectation;
 - scratch Project/task path when recoverable temporary files exist;
-- cleanup/promotion state.
+- cleanup trigger, finalizers/blockers, and lifecycle state such as `cleanup_pending`;
+- promoted durable artifact/evidence locations.
 
-Scratch is Runner-local and must not silently become authoritative project state.
+Scratch is Runner-local and must not silently become authoritative project state. A later controller should be able to continue exact finalization without rediscovering ownership from directory names.
 
 ## Wait / continuation state
 
