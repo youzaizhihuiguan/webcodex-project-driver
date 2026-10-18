@@ -54,15 +54,33 @@ Keep remote host/resource identity, persistent shell identity, and Job/process i
 
 Prefer the runtime's artifact transfer/handoff primitives for durable binary or large cross-Project results rather than passing bytes through model text.
 
+WebCodex-created transport packaging, copied source trees, extraction directories, and non-Git validation workspaces are owned ephemeral resources. Stage them under the exact source/destination task scratch unless the project or user explicitly owns another destination.
+
 When provenance matters, verify:
 
 - source Project/artifact identity;
 - frozen snapshot/content hash;
 - destination Project/path;
 - destination content/hash;
-- overwrite/replay semantics.
+- overwrite/replay semantics;
+- source/destination ephemeral resource ownership and cleanup conditions.
 
-Transfer success proves transport, not domain correctness.
+A safe transfer lifecycle is:
+
+~~~text
+source/candidate
+-> task-scratch transport package
+-> transfer
+-> destination task-scratch extract/validation
+-> verify content/hash
+-> run validation/use
+-> promote required durable result/receipt
+-> finalize source + destination ephemeral copies
+~~~
+
+Transfer success proves transport, not domain correctness. After required result/evidence is promoted, transport archives, extracted validation copies, and generated output should not remain merely for convenience.
+
+If the required destination is outside configured scratch and is not already project/user-owned, surface the proposed persistent destination before creating it.
 
 ## Cross-Project integration
 
