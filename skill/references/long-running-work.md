@@ -24,6 +24,19 @@ When a durable AgentTask/Attempt owns long work, keep Task/Attempt freshness sep
 
 When the controller only needs terminal attention, prefer a supported AgentWait/Job-wait/Endpoint-Wake path over keeping one model turn open. See [event-driven-continuation.md](event-driven-continuation.md).
 
+## Resource ownership for long work
+
+Long duration does not waive resource-lifecycle rules.
+
+When a long Job/Task owns scratch, a validation workspace, build output, a persistent shell, or another temporary resource:
+
+- record the exact owner/resource provenance before or at allocation;
+- keep the resource while the owner is active, waiting, interrupted, or outcome-unknown;
+- when execution becomes substantively terminal, transition owned resources through finalization rather than abandoning them;
+- if finalization cannot complete, preserve `cleanup_pending` plus the remaining exact cleanup delta.
+
+Do not keep a model turn open merely to guarantee cleanup. Persist enough ownership state that a later controller can finish the same finalization safely.
+
 ## Durable state for long work
 
 When the outer task contract requires durable recovery, add WebCodex-specific state such as:
@@ -37,6 +50,7 @@ When the outer task contract requires durable recovery, add WebCodex-specific st
 - Wait/Wake/continuation identity when terminal attention is armed;
 - last observation and terminal/failure reason when known;
 - evidence/result location;
+- owned temporary resource identities/paths and cleanup state when relevant;
 - exact next action;
 - whether replacement dispatch is forbidden until reconciliation.
 
