@@ -1,40 +1,61 @@
-# Scratch Lifecycle
+# Scratch and Resource Lifecycle
 
 ## Purpose
 
-Keep recoverable construction debris out of authoritative project workspaces while preserving enough temporary state to survive interruption.
+Keep WebCodex-created temporary state out of authoritative project/user workspaces and make every material temporary resource recoverable and reclaimable.
 
-Scratch is not a second source tree and not a permanent artifact store. It is short-to-medium-lived, Runner-local working state owned by an exact Project and bounded Task/Session/Job/run.
+Scratch is Runner-local owned working state, not a second source tree and not a permanent artifact store. The primary rule is:
+
+> allocate with ownership -> work -> promote durable results -> finalize -> reclaim -> verify
+
+Do not rely on later path scanning as the normal cleanup mechanism.
 
 ## Contents
 
-- [Configured roots](#configured-roots)
-- [Project layout](#project-layout)
-- [Stable project identity](#stable-project-identity)
-- [Project metadata](#project-metadata)
-- [Task ownership](#task-ownership)
-- [Lifecycle classes](#lifecycle-classes)
-- [Computer / Browser / script hygiene](#computer--browser--script-hygiene)
-- [Shared scratch](#shared-scratch)
-- [Interruption rule](#interruption-rule)
-- [Closeout and cleanup](#closeout-and-cleanup)
-- [Hygiene and capacity](#hygiene-and-capacity)
+- [Configured roots and placement admission](#configured-roots-and-placement-admission)
+- [Project/task layout](#projecttask-layout)
+- [Resource ownership manifest](#resource-ownership-manifest)
+- [Retention classes](#retention-classes)
+- [Build and dependency outputs](#build-and-dependency-outputs)
+- [Evidence promotion](#evidence-promotion)
+- [Interruption and recovery](#interruption-and-recovery)
+- [Terminal finalization](#terminal-finalization)
+- [Pre-allocation reconciliation](#pre-allocation-reconciliation)
+- [Hygiene, orphan recovery, and capacity](#hygiene-orphan-recovery-and-capacity)
 - [Multi-Runner rule](#multi-runner-rule)
 
-## Configured roots
+## Configured roots and placement admission
 
-For this installation, use:
+For this installation, the pre-authorized WebCodex scratch roots are:
 
 - macOS: `/Users/youzai/ai/scratch`
 - Windows: `D:\ai\scratch`
 
-Treat these as user-selected deployment roots, not universal WebCodex defaults. A different Runner must have an explicitly configured scratch root before this policy is relied on.
+These are deployment-specific roots, not universal WebCodex defaults.
 
-Scratch roots are Runner-local. Do not assume the macOS and Windows roots are the same filesystem or automatically synchronized.
+Use the configured scratch root automatically for WebCodex-created ephemeral state such as:
 
-## Project layout
+- non-Git native-validation workspaces;
+- copied/extracted source used only for validation;
+- transfer packaging and unpacking;
+- Browser downloads and staging;
+- one-off scripts and transient logs;
+- temporary screenshots or raw evidence;
+- task-scoped build/dependency output when the project/toolchain permits it.
 
-Use one stable project directory under the Runner-local root:
+Do **not** place WebCodex-created temporary state in a source checkout, Desktop, Downloads, drive root, a convenient user project directory, or another arbitrary persistent location merely because that path is writable.
+
+A non-scratch destination is allowed only when at least one is true:
+
+1. project/repository instructions explicitly own that destination;
+2. the user explicitly approved that destination for this resource class;
+3. the destination is the authoritative source/artifact location required by the task.
+
+If a new persistent or user-visible destination is not already authorized, explain what would be stored there and why, then obtain the required user decision before creating it.
+
+## Project/task layout
+
+Use one stable project directory under the Runner-local scratch root:
 
 ~~~text
 scratch/
@@ -44,164 +65,183 @@ scratch/
     └── tasks/
         └── <task-key>/
             ├── manifest.json
-            ├── screenshots/
-            ├── scripts/
+            ├── source/
+            ├── build/
             ├── downloads/
             ├── staging/
+            ├── screenshots/
             ├── logs/
             └── misc/
 ~~~
 
-Create task subdirectories lazily. Do not pre-create empty categories that the run never uses.
+Create subdirectories lazily. A validation source copy belongs under the owning task rather than beside the user's normal project files.
 
-## Stable project identity
+Derive the stable project key from an exact durable WebCodex Project or other authoritative project identity. Never guess durable scratch identity from a display name alone.
 
-Resolve an exact WebCodex Project or other authoritative project identity before creating durable project scratch.
+## Resource ownership manifest
 
-Derive the stable project key from an exact durable identity such as the canonical WebCodex Project identity or another project-owned stable identifier. Keep a readable project-name prefix only for human navigation.
+Creation and cleanup use explicit provenance, not path heuristics.
 
-If two projects share the same display name, their stable keys must still differ.
+A task `manifest.json` should remain small and mechanical and may track one or more owned resources. For each disk-material resource, retain enough fields to establish:
 
-If project identity is materially ambiguous, do not create guessed durable scratch such as `project-2`, `temp-project`, or a directory inferred only from chat text.
-
-When the exact Project is known and its scratch directory is absent, create the project scratch automatically when current authority permits it. This is routine control-plane housekeeping, not a user decision.
-
-## Project metadata
-
-Keep `project.json` small and mechanical. Record only fields that help recovery, for example:
-
-- readable project name;
-- exact project identity;
-- canonical project path or repository identity when applicable;
-- Runner/client identity;
-- created/last-used timestamps;
-- optional schema version.
-
-Do not turn `project.json` into a second project database.
-
-## Task ownership
-
-Prefer one bounded Task/run directory per independently cleanable unit.
-
-Use the strongest exact owner identity already available:
-
-1. AgentTask;
-2. Workflow Session;
-3. Job;
-4. another explicit run id created after Project identity is known.
-
-Do not make Agent/model name the first-level partition. Multiple agents may collaborate on the same Project and Task.
-
-A task `manifest.json` should record enough to recover ownership and cleanup state, such as:
-
-- owner/controller kind;
-- exact Project identity;
-- exact Task/Session/Job/run identity;
+- resource id/kind;
+- `created_by_webcodex` provenance;
+- exact Project and strongest available Task/Session/Job/run owner;
 - Runner identity;
+- exact path;
+- source/candidate/ref/hash when relevant;
+- retention class;
 - lifecycle state;
-- created/last-used timestamps;
-- `recovery_required`;
-- promoted artifact/evidence locations when relevant.
+- cleanup triggers;
+- cleanup finalizers/blockers;
+- promoted durable artifact/evidence locations.
 
-## Lifecycle classes
+Useful lifecycle states include:
 
-Distinguish these classes:
+~~~text
+active
+waiting
+recovery_required
+terminal
+finalizing
+cleanup_pending
+closed
+~~~
+
+Do not invent a second project/task database. The manifest exists only to prove ownership, recovery requirements, and end-of-life.
+
+If ownership metadata is missing or inconsistent, protect the resource and reconcile/ask rather than broad-scan deleting nearby files.
+
+## Retention classes
+
+Classify WebCodex-managed filesystem state by retention, not by filename.
 
 ### Runner temporary
 
-Runtime-owned temporary files, such as the typed temporary script used internally by `run_script`, remain runtime-owned. Do not copy them into scratch merely to track them.
+Runtime-internal temporary files remain runtime-owned. Do not copy them into scratch merely to track them.
 
-### Ephemeral scratch
+### Owned ephemeral
 
-Disposable construction outputs such as ordinary debug screenshots, one-off helper files, temporary JSON, download staging, unpacked intermediates, and transient logs.
+Examples: validation source copies, transfer archives, unpacked intermediates, debug screenshots, one-off scripts, transient logs.
 
-Delete these after their owning task reaches a safely reconciled terminal state.
+Default: reclaim after the exact owner is safely terminal and required results are promoted.
 
-### Recovery-required scratch
+### Owned regenerable
 
-Temporary state still needed to resume an active, waiting, blocked, interrupted, or outcome-unknown task.
+Examples: `target/`, build/intermediate output, dependency trees, generated `dist/`/out directories, task-scoped caches.
 
-Retain it until the exact owning work is reconciled and a durable replacement/checkpoint exists.
+Default: reclaim when no immediate dependent needs them. Retaining the source/worktree never implies retaining regenerable state.
+
+### Recovery-required
+
+State still required to resume active, waiting, interrupted, blocked, or outcome-unknown work.
+
+Default: retain until the exact prior effect is reconciled and another durable recovery path exists.
 
 ### Pending promotion
 
-Temporary output that may become durable evidence/artifact, such as a failure screenshot, benchmark log, GUI acceptance image, or reproduction bundle.
+Raw material that may become formal evidence/artifact.
 
-At closeout, explicitly promote the useful result into the authoritative artifact/evidence location or delete it.
+Default: promote the minimum required durable result or delete it at finalization.
 
-### Durable artifact/evidence/source
+### Durable project-owned
 
-Once promoted into project-owned durable state, it leaves scratch cleanup semantics. Do not use scratch as its permanent home.
+Authoritative source, project-declared evidence, or promoted artifacts leave scratch semantics and follow their owning project policy.
 
-## Computer / Browser / script hygiene
+### Foreign/unknown
 
-Normal Computer observation should remain observation. Do not persist every UI step as an image.
+Pre-existing or ownership-uncertain state is never treated as owned scratch merely because it looks temporary. Protect and escalate for a decision when cleanup is desired.
 
-Save a Computer snapshot only when it materially supports:
+## Build and dependency outputs
 
-- interruption recovery;
-- failure or audit evidence;
-- final GUI acceptance;
-- a user-requested screenshot;
-- a cross-turn visual state that cannot be reconstructed cheaply.
+Generated output has a lifecycle independent from its source checkout/worktree.
 
-Place scratch screenshots under the owning task until promoted.
+When a validation/build is ephemeral and the toolchain supports a documented per-process output location without violating project policy, prefer routing heavy generated state under the owning task scratch. For example, Cargo supports a task-specific target directory through its standard target-dir mechanisms.
 
-Place agent-created one-off scripts, Browser downloads, unpacking/conversion staging, debug logs, and similar recoverable debris under the owning task scratch rather than the source Project, Desktop, Downloads, drive root, or arbitrary system directories.
+Do not mutate global user/toolchain configuration merely to implement scratch policy, and do not invent a shared cross-worktree cache layout. Use project/toolchain-supported caching only when already authorized.
 
-Prefer Runner-owned temporary execution for truly disposable scripts when recovery does not require the file.
+When output remains inside a checkout/worktree, still treat it as an owned regenerable resource and finalize it separately. In particular:
 
-## Shared scratch
+> keep worktree != keep target/build/dependencies
 
-Use `shared/` only for temporary material genuinely required by multiple bounded tasks in the same Project.
+## Evidence promotion
 
-Do not use `shared/` as a miscellaneous dumping ground. Track owners/dependents when shared scratch materially affects recovery.
+Raw validation material starts as scratch unless the project already declares it durable.
 
-## Interruption rule
+Prefer promoting compact, reconstructable evidence such as:
 
-Do not clean scratch merely because a model turn, ChatGPT window, Host carrier, or Runner connection ended.
+- candidate/ref/hash;
+- exact Job/Task/Attempt identity;
+- result/verdict and test counts;
+- required log excerpt/receipt;
+- artifact hash/location;
+- necessary screenshots.
 
-For `active`, `waiting`, `blocked`, `interrupted`, or outcome-`unknown` work:
+A transport archive, extracted repository copy, dependency tree, or complete build directory is not formal evidence merely because it participated in validation.
 
-1. recover exact ownership;
-2. reconcile Task/Job/resource state;
-3. determine whether scratch remains the only recovery copy;
-4. clean only after a durable replacement or terminal outcome is verified.
+Preserving failed formal evidence means preserving the required failed-run provenance/result. It does not automatically require retaining every reproducible build intermediate.
 
-## Closeout and cleanup
+If a large binary must become durable evidence and no project-owned artifact destination exists, surface the proposed destination/retention before persisting it.
 
-For a safely reconciled terminal task:
+## Interruption and recovery
 
-1. inspect its manifest and exact owner;
-2. promote required evidence/artifacts;
-3. verify no active worker/run still depends on its scratch;
-4. delete remaining ephemeral/recovery scratch;
-5. prefer removing the entire task directory as the cleanup unit;
-6. update project/shared references if needed.
+Do not clean an owned resource merely because a model turn, ChatGPT window, Host carrier, or Runner connection ended.
 
-For a retired Project scratch directory, delete it only after no active/recoverable work or unique evidence remains.
+For active, waiting, interrupted, blocked, or outcome-unknown work:
 
-Unknown untracked files are not automatically scratch merely because they look temporary.
+1. recover exact owner/resource identity;
+2. reconcile Task/Job/process state;
+3. determine whether the resource is still the only recovery copy;
+4. retain only while that recovery dependency remains real.
 
-## Hygiene and capacity
+Cleanup itself must be retryable. If only some finalization steps succeed, record `cleanup_pending` and continue the unresolved cleanup delta later rather than recreating or broadly deleting resources.
 
-Keep project-workspace hygiene and scratch hygiene separate.
+## Terminal finalization
 
-Project-workspace hygiene looks for accidental debris inside the authoritative workspace.
+Substantive PASS/FAIL/SUPERSEDED/CANCELLED does not by itself close owned-resource lifecycle.
 
-Scratch hygiene looks for:
+For an exact safely terminal owner:
 
-- terminal task leftovers;
-- orphaned task/project directories;
+1. pull back required results;
+2. promote required durable evidence/artifacts;
+3. verify no active Job/Task/process still depends on each resource;
+4. verify no unique dirty/uncommitted/recovery state would be lost;
+5. reclaim owned ephemeral and unneeded regenerable resources;
+6. close/unregister temporary control-plane objects when appropriate;
+7. verify expected path/registry/disk changes;
+8. mark the resource lifecycle `closed`.
+
+If a finalizer cannot be satisfied, leave the exact resource `cleanup_pending` with the blocker recorded.
+
+## Pre-allocation reconciliation
+
+Before creating another heavy worktree, validation workspace, source copy, or build for the same Project, inspect known owned leases/resources from prior tasks.
+
+If earlier resources are already terminal or `cleanup_pending`, finish their safe cleanup first when possible. Do not keep allocating new large resources on top of known terminal leftovers.
+
+This is a recovery guard, not permission for a broad filesystem sweep.
+
+## Hygiene, orphan recovery, and capacity
+
+Normal cleanup is manifest/ownership scoped.
+
+Use broader scratch hygiene only as a fallback to find:
+
+- terminal manifests whose cleanup never completed;
+- orphaned WebCodex-owned task directories;
 - stale recovery-required state;
 - pending-promotion evidence;
-- oversized scratch;
+- oversized owned scratch;
 - shared scratch with no live dependents.
 
-Use capacity thresholds only as review triggers, not deletion authority. For this installation, useful initial soft-review thresholds are about 2 GiB per task and 10 GiB per project. Project policy may override them.
+Age/TTL may help identify candidates, but age alone never proves deletion safety. Automatic orphan cleanup is limited to WebCodex-owned scratch with recoverable ownership plus satisfied finalizers.
+
+Keep workspace hygiene and scratch hygiene separate.
+
+For this installation, about 2 GiB per task and 10 GiB per project remain useful soft review signals. If a Project is already above a soft threshold, report/reconcile existing owned terminal state before another large allocation. Thresholds are not deletion authority.
 
 ## Multi-Runner rule
 
 The same logical Project may have independent scratch on Mac and Windows.
 
-Record Runner identity and never infer that a scratch path on one Runner exists on another. Transfer only explicitly promoted/verified artifacts when cross-Runner sharing is required.
+Record Runner identity on every owned resource. Never infer that a path on one Runner exists on another, and never transfer temporary trees merely to mirror layouts. Transfer only what the cross-Runner task actually needs; keep transport/extracted copies owned by their exact source/destination tasks and finalize both sides after handoff.
