@@ -74,7 +74,7 @@ Goals:
 
 ## v0.3.3 — resource lifecycle hardening
 
-Status: implementation/validation.
+Status: implemented/validated.
 
 Goals:
 
