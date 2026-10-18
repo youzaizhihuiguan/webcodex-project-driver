@@ -74,6 +74,16 @@ v0.3.1 operational hardening adds:
 - Computer/Browser/script/download staging hygiene and promote-or-delete closeout;
 - durable attention routing for completion, failure, interruption, audit blockers, and user decisions.
 
+Current resource-lifecycle hardening further requires:
+
+- placement admission before disk-material WebCodex allocations;
+- explicit creation provenance/ownership instead of cleanup by path guesswork;
+- managed-worktree consent/reuse rules and read-only-review reuse;
+- generated-output lifecycle independent from worktree retention;
+- evidence staging then explicit promotion;
+- terminal finalizers with recoverable `cleanup_pending`;
+- pre-allocation reconciliation of earlier owned terminal leftovers.
+
 v0.3.3 resource lifecycle hardening adds:
 
 - admission-before-allocation for disk-material WebCodex resources;
@@ -100,7 +110,7 @@ Project Driver owns WebCodex control semantics:
 - Runner placement;
 - long-running Job/process lifecycle;
 - interruption recovery of exact WebCodex state;
-- resource/scratch lifecycle;
+- resource admission, placement, ownership/provenance, retention, finalization, and Runner-local scratch lifecycle;
 - evidence/result/integration provenance and handoff;
 - Browser/Computer/SSH/artifact/cross-Project semantics.
 
